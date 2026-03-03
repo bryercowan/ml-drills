@@ -1239,7 +1239,7 @@
 
 <h1 id="speed-run-all-implementations-from-scratch">Speed Run — All Implementations From Scratch<a class="headerlink" href="#speed-run-all-implementations-from-scratch" title="Permanent link">&para;</a></h1>
 <p>Open this notebook. Set a <strong>60-minute timer</strong>. Implement everything without looking at the other notebooks.</p>
-<p>This is your interview simulation. No hints. No building blocks. Just you and the spec.</p>
+<p>This is your timed challenge. No hints. No building blocks. Just you and the spec.</p>
 <p><strong>Rules:</strong>
 1. No peeking at other notebooks or external references
 2. Each function must pass its assertions
@@ -2110,11 +2110,13 @@ Return list of average losses per epoch</p>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
 <span class="n">minutes</span> <span class="o">=</span> <span class="n">elapsed</span> <span class="o">/</span> <span class="mi">60</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed in </span><span class="si">{</span><span class="n">minutes</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> minutes&quot;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">minutes</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All 9 in under 60 min = ready for interviews&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All 9 in under 60 min = ready&quot;</span><span class="p">)</span>
+
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Keep practicing — target is under 60 minutes!&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>

@@ -900,10 +900,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interview-cheat-sheet" class="md-nav__link">
+  <a href="#cheat-sheet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interview Cheat Sheet
+        Cheat Sheet
       
     </span>
   </a>
@@ -1301,7 +1301,7 @@
 - The base policy only completed step 1 about <strong>20% of the time</strong></p>
 <p>That's not a hyperparameter problem. That's a <strong>signal problem</strong>.</p>
 <p>This notebook will give you the math to explain <em>exactly</em> why it failed — the kind
-of understanding that lets you diagnose RL training failures in an interview and
+of understanding that lets you diagnose RL training failures and
 sound like you actually know what's going on, not just that you tried a bunch of configs.</p>
 <p><strong>By the end you'll be able to:</strong>
 1. Compute KL divergence by hand and explain what the number means
@@ -1377,7 +1377,7 @@ outcome x contributes. When P puts mass where Q doesn't, KL explodes.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;use Q instead of P for encoding. These distributions are CLOSE.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h3 id="building-block-2-kl-is-not-symmetric">Building Block 2: KL is NOT Symmetric<a class="headerlink" href="#building-block-2-kl-is-not-symmetric" title="Permanent link">&para;</a></h3>
-<p>This is a classic interview gotcha. Let's see it concretely.</p>
+<p>This is a classic common gotcha. Let's see it concretely.</p>
 <p><strong>Intuition for why it matters</strong>:
 - KL(P||Q) penalizes Q for putting LOW probability where P puts HIGH probability
 - KL(Q||P) penalizes P for putting LOW probability where Q puts HIGH probability
@@ -1802,7 +1802,7 @@ that's already decent — it can't teach a model a fundamentally new capability.
 Think of GRPO as fine-tuning the last mile, not the first mile.</p>
 <hr />
 <h2 id="part-2-complete-implementations">Part 2: Complete Implementations<a class="headerlink" href="#part-2-complete-implementations" title="Permanent link">&para;</a></h2>
-<p>Now let's write clean implementations that you could explain line-by-line in an interview.</p>
+<p>Now let's write clean implementations that you could explain line-by-line.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
@@ -2062,7 +2062,7 @@ Think of GRPO as fine-tuning the last mile, not the first mile.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now imagine this with a neural net and millions of parameters...&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />
-<h2 id="interview-cheat-sheet">Interview Cheat Sheet<a class="headerlink" href="#interview-cheat-sheet" title="Permanent link">&para;</a></h2>
+<h2 id="cheat-sheet">Cheat Sheet<a class="headerlink" href="#cheat-sheet" title="Permanent link">&para;</a></h2>
 <p><strong>"What is KL divergence?"</strong></p>
 <blockquote>
 <p>KL(P||Q) measures the extra bits needed to encode samples from P using distribution Q.
@@ -2206,7 +2206,7 @@ penalizes the policy for NOT covering all modes of the reference.</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;grpo_loss: ALL TESTS PASSED ✓&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You can now explain KL divergence and GRPO loss in an interview. 🎯&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You can now explain KL divergence and GRPO loss clearly. 🎯&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>

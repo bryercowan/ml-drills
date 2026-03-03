@@ -1271,7 +1271,7 @@ a precise meaning:</p>
 <li><strong>Loss = 0.09</strong> → the model assigned <strong>exp(-0.09) ≈ 91.4%</strong> probability to the correct action</li>
 </ul>
 <p>By the end of this notebook you'll:
-1. Implement softmax from scratch (with the stability trick interviewers love to ask about)
+1. Implement softmax from scratch (with the stability trick you'll be expected to know)
 2. Implement cross-entropy loss from scratch
 3. Understand exactly what your training loss numbers mean</p>
 <hr />
@@ -1362,7 +1362,7 @@ to the right answer.</p>
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="building-block-3-the-fix-subtract-the-max">Building Block 3: The Fix — Subtract the Max<a class="headerlink" href="#building-block-3-the-fix-subtract-the-max" title="Permanent link">&para;</a></h2>
-<p>Here's the trick (and the interview answer):</p>
+<p>Here's the trick (and the key insight):</p>
 <p><strong>softmax(x) = softmax(x - c)</strong> for any constant c.</p>
 <p>Proof: if we subtract c from every element:
 - Numerator: exp(x_i - c) = exp(x_i) · exp(-c)
@@ -1776,7 +1776,7 @@ This is how you know you got it right.</p>
 <li><strong>Loss value meaning</strong>: prob_correct = exp(-loss)</li>
 <li>Loss 3.29 → 3.7% confidence on correct answer</li>
 <li>Loss 0.09 → 91.4% confidence on correct answer</li>
-<li><strong>The stability trick</strong> (subtract max) is a standard interview question — know why it works</li>
+<li><strong>The stability trick</strong> (subtract max) is a standard question — know why it works</li>
 <li>In practice, libraries fuse softmax + log + negative into one numerically stable operation</li>
 </ol>
 <p>These two functions are the foundation of classification training. Every time you
