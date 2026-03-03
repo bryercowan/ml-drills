@@ -1,0 +1,1552 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../pitch/">
+      
+      
+        <link rel="next" href="../questions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Core Concepts - ML Interview Prep</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#concepts-theyll-expect-you-to-explain" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ML Interview Prep" class="md-header__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ML Interview Prep
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core Concepts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../drills/" class="md-tabs__link">
+          
+  
+  
+  Coding Drills
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Interview Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ML Interview Prep" class="md-nav__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    ML Interview Prep
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Drills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Drills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/00-pytorch-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00. PyTorch Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/01-self-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01. Self-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/02-multi-head-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02. Multi-Head Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/03-training-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03. Training Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/04-cross-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04. Cross-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/05-lora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05. LoRA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/06-softmax-cross-entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06. Softmax & Cross-Entropy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/07-transformer-block/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07. Transformer Block
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/08-layer-norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08. Layer Norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/09-film-conditioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09. FiLM Conditioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/10-diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Diffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/11-kl-divergence-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. KL Divergence & GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/12-positional-encoding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Positional Encoding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drills/13-speed-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Speed Run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interview Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Interview Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pitch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your Pitch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#attention-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attention Mechanism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backpropagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backpropagation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lora-low-rank-adaptation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LoRA (Low-Rank Adaptation)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diffusion-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diffusion Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kl-divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KL Divergence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-entropy-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Entropy Loss
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policy-gradient-reinforce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Gradient / REINFORCE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#residual-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Residual Connections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch-normalization-layer-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch Normalization / Layer Normalization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tokenization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tokenization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transfer-learning-fine-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transfer Learning / Fine-Tuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overfitting-vs-underfitting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overfitting vs Underfitting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Questions & Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../study-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Study Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Positioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="concepts-theyll-expect-you-to-explain">Concepts They'll Expect You to Explain<a class="headerlink" href="#concepts-theyll-expect-you-to-explain" title="Permanent link">&para;</a></h1>
+<p>For each concept: what it IS in formal terms, and what YOU'D say
+connecting it to your work.</p>
+<h3 id="attention-mechanism">Attention Mechanism<a class="headerlink" href="#attention-mechanism" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Given queries Q, keys K, values V:
+  Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V
+The dot product QK^T measures similarity between queries and keys.
+Softmax normalizes to a probability distribution. The output is a
+weighted sum of values, where weights = how relevant each key is
+to each query.</p>
+<p>YOUR VERSION: "In my VLM, Q/K/V projections are the layers I LoRA-tune.
+They determine what the model attends to in the screenshot given the
+current subgoal. In my CNN policy, cross-attention is how action tokens
+attend to spatial image features — Q comes from the action being predicted,
+K and V come from the ConvNeXt spatial map. This is what gives the model
+coordinate grounding."</p>
+<p>GOTCHA QUESTION: "Why divide by sqrt(d_k)?"
+"Without it, the dot products grow large with dimension, pushing softmax
+into regions with tiny gradients. The scaling keeps gradients healthy.
+This is the same reason you see training instability with large models —
+attention scores can saturate."</p>
+<h3 id="backpropagation">Backpropagation<a class="headerlink" href="#backpropagation" title="Permanent link">&para;</a></h3>
+<p>FORMAL: The chain rule applied recursively through a computation graph.
+For any parameter w: dL/dw = (dL/da)(da/dw) where a is an intermediate
+activation. Stack this through every layer.</p>
+<p>YOUR VERSION: "When I freeze the vision encoder, I'm cutting off gradient
+flow to those parameters — they don't update because dL/dw is never
+computed for them. When I freeze CLIP, same thing. When I discovered
+that LoRA on MLP layers destroyed spatial grounding, the issue was that
+gradients through the MLP were overwriting Meituan's learned
+visual-to-coordinate mapping with our smaller dataset."</p>
+<h3 id="lora-low-rank-adaptation">LoRA (Low-Rank Adaptation)<a class="headerlink" href="#lora-low-rank-adaptation" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Instead of updating a full weight matrix W (d x d), decompose
+the update as W + BA where B is (d x r) and A is (r x d), with r &lt;&lt; d.
+This restricts updates to a rank-r subspace. Mathematically related to
+SVD — you're approximating the weight change with its top-r singular
+vectors.</p>
+<p>YOUR VERSION: "I use r=64, alpha=128 on the attention projections.
+174M trainable params out of 8.9B total — 1.95%. The key discovery
+was that WHICH layers you apply LoRA to matters as much as the rank.
+Attention-only (61M params, 0.69%) outperformed attention+MLP (174M,
+1.95%) because the MLP layers store spatial grounding that shouldn't
+be disturbed with only 3,912 examples."</p>
+<p>GOTCHA: "What does alpha do?"
+"Alpha scales the LoRA output: delta_W = (alpha/r) * BA. Higher alpha
+relative to r amplifies the adapter's contribution. It's effectively
+a learning rate multiplier for the low-rank update."</p>
+<h3 id="diffusion-models">Diffusion Models<a class="headerlink" href="#diffusion-models" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Learn to reverse a gradual noising process. Forward process adds
+Gaussian noise over T steps: q(x_t|x_{t-1}) = N(sqrt(1-beta_t)<em>x_{t-1}, beta_t</em>I).
+Training: predict the noise epsilon from a noised sample x_t.
+Loss: ||epsilon - epsilon_theta(x_t, t)||^2.
+Inference: start from pure noise, iteratively denoise using learned
+predictions. DDIM sampling uses fewer steps (10 vs 100).</p>
+<p>YOUR VERSION: "My CNN policy IS a diffusion policy — same architecture as
+Chi et al. 2023. Instead of denoising images, I denoise action vectors.
+The 10-dim action vector (8 action type dims + 2 coordinate dims) starts
+as Gaussian noise and gets iteratively refined. I train with 100 diffusion
+timesteps but sample with 10 DDIM steps at inference for speed. The
+advantage over direct regression: diffusion handles multi-modal distributions.
+If there are two valid buttons to click, direct regression predicts the
+average (between the buttons, hitting nothing). Diffusion can represent
+both modes and sample from one."</p>
+<h3 id="kl-divergence">KL Divergence<a class="headerlink" href="#kl-divergence" title="Permanent link">&para;</a></h3>
+<p>FORMAL: KL(P||Q) = E_P[log(P/Q)] = sum over x of P(x) * log(P(x)/Q(x)).
+Measures how different distribution Q is from distribution P. Always &gt;= 0.
+Zero iff P = Q. NOT symmetric: KL(P||Q) != KL(Q||P).</p>
+<p>YOUR VERSION: "In GRPO, KL(pi_theta || pi_ref) penalizes the policy for
+diverging from the reference (SFT checkpoint). My KL hit 14-23 after just
+2 updates — the policy was catastrophically forgetting the SFT behavior.
+Even at lr=1e-7 with KL coeff 0.5, the raw gradient norms were ~1500.
+The fundamental problem wasn't the KL penalty — it was that the reward
+signal was too sparse to give the optimizer a good direction, so it just
+drifted."</p>
+<h3 id="cross-entropy-loss">Cross-Entropy Loss<a class="headerlink" href="#cross-entropy-loss" title="Permanent link">&para;</a></h3>
+<p>FORMAL: H(p,q) = -sum of p(x) * log(q(x)). When p is the true label
+(one-hot) and q is the model's predicted distribution, this simplifies to
+-log(q(correct_class)). Equivalent to negative log-likelihood. This IS
+your SFT training loss.</p>
+<p>YOUR VERSION: "My SFT loss went from 3.29 to 0.09 over training. That
+means the model went from assigning ~3.6% probability to the correct action
+(e^-3.29 ≈ 0.037) to assigning ~91% probability (e^-0.09 ≈ 0.914).
+Loss is computed only on the action tokens, not the image or prompt tokens."</p>
+<h3 id="policy-gradient-reinforce">Policy Gradient / REINFORCE<a class="headerlink" href="#policy-gradient-reinforce" title="Permanent link">&para;</a></h3>
+<p>FORMAL: The gradient of expected reward:
+  nabla J = E[nabla log pi(a|s) * (R - b)]
+where b is a baseline to reduce variance. Update the policy by increasing
+the probability of actions that got above-average reward.</p>
+<p>YOUR VERSION: "GRPO is a variant of this. Instead of a learned baseline,
+it uses the group mean reward — sample G trajectories, rank by reward,
+update toward the better ones. The problem in my case: with ~20% step-1
+completion rate, almost all G trajectories got the same (bad) reward.
+No variance in the group means the relative advantage is noise, so the
+gradient is noise, so KL diverges."</p>
+<h3 id="residual-connections">Residual Connections<a class="headerlink" href="#residual-connections" title="Permanent link">&para;</a></h3>
+<p>FORMAL: f(x) = x + F(x) where F is the learned transformation. The
+identity path (x) provides a gradient highway — during backprop,
+dL/dx = dL/df * (1 + dF/dx). The "1" term means gradients always flow
+through, preventing vanishing gradients in deep networks.</p>
+<p>YOUR VERSION: "Both my VLM backbone (Qwen3-VL) and my CNN (ConvNeXt) use
+residual connections throughout. My denoiser's ResidualBlock1D layers
+each have skip connections. Without them, training a 50-layer ConvNeXt
+would be impossible — gradients would vanish before reaching early layers."</p>
+<h3 id="batch-normalization-layer-normalization">Batch Normalization / Layer Normalization<a class="headerlink" href="#batch-normalization-layer-normalization" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Normalize activations to zero mean and unit variance within a
+batch (BatchNorm) or within a layer (LayerNorm). Stabilizes training by
+preventing internal covariate shift — each layer sees consistently
+scaled inputs regardless of what earlier layers are doing.</p>
+<p>YOUR VERSION: "My transformer backbone uses LayerNorm (standard for
+transformers — BatchNorm has issues with variable sequence lengths and
+doesn't work well for autoregressive models). LayerNorm normalizes across
+the feature dimension for each token independently."</p>
+<h3 id="tokenization">Tokenization<a class="headerlink" href="#tokenization" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Converting raw input (text, images) into discrete tokens the model
+processes. For text: BPE (Byte Pair Encoding) — start with individual bytes,
+iteratively merge the most frequent adjacent pairs. For images (ViT): split
+into fixed-size patches (e.g., 16x16 pixels), project each patch to a vector.</p>
+<p>YOUR VERSION: "My compact action format is designed around the existing BPE
+vocabulary. 'click(500,300)' uses tokens that already exist in the LLM's
+vocabulary — parentheses, commas, numbers. No special tokens needed. This
+is why it works better than custom XML formats with tokens the model has
+rarely seen. For vision, EvoCUA's Qwen3-VL backbone uses a ViT that splits
+the screenshot into patches and produces visual tokens."</p>
+<h3 id="transfer-learning-fine-tuning">Transfer Learning / Fine-Tuning<a class="headerlink" href="#transfer-learning-fine-tuning" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Taking a model pretrained on a large general dataset and adapting
+it to a specific task. The pretrained weights provide good initialization —
+features learned on general data (edges, textures, object parts for vision;
+syntax, semantics for language) transfer to new tasks.</p>
+<p>YOUR VERSION: "My entire approach is transfer learning. EvoCUA-8B was
+pretrained by Meituan on 82K GUI trajectories. I transfer that knowledge
+to my specific benchmark via LoRA SFT on Claude's demonstrations. The
+frozen vision encoder IS the transferred knowledge — it already understands
+GUIs. I only adapt the attention layers to change what the model focuses on."</p>
+<h3 id="overfitting-vs-underfitting">Overfitting vs Underfitting<a class="headerlink" href="#overfitting-vs-underfitting" title="Permanent link">&para;</a></h3>
+<p>FORMAL: Overfitting = model memorizes training data, fails on new data
+(training loss low, eval loss high). Underfitting = model hasn't learned
+enough (both losses high). The gap between train and eval loss indicates
+overfitting.</p>
+<p>YOUR VERSION: "My SFT v5 had eval loss 0.087 at epoch 3.8 with training
+loss around 0.09 — almost no gap, meaning minimal overfitting despite only
+857 examples. This is because LoRA with frozen vision encoder is highly
+regularized — the model can only change within a low-rank subspace of the
+attention weights. The frozen backbone prevents catastrophic forgetting of
+general GUI knowledge."</p>
+<hr />
+<h1 id="concepts-to-quickly-review-flash-card-style">Concepts to Quickly Review (Flash Card Style)<a class="headerlink" href="#concepts-to-quickly-review-flash-card-style" title="Permanent link">&para;</a></h1>
+<p>If you can explain each of these in 2 sentences, you're ready.</p>
+<p>TRANSFORMER: Stack of attention + feedforward blocks with residual
+connections and layer norm. Attention lets every token look at every
+other token; feedforward processes each token independently.</p>
+<p>SELF-ATTENTION vs CROSS-ATTENTION: Self = Q, K, V all come from the
+same sequence. Cross = Q from one sequence, K/V from another (like
+action tokens attending to image features in your CNN).</p>
+<p>MULTI-HEAD ATTENTION: Run attention in parallel across h heads with
+d_k = d_model/h. Each head can learn different patterns (one head
+attends to nearby tokens, another to similar tokens, etc.).</p>
+<p>POSITIONAL ENCODING: Transformers have no built-in notion of order.
+Positional encodings (sinusoidal or learned) add position information
+so the model knows token 3 comes before token 7.</p>
+<p>VISION TRANSFORMER (ViT): Split image into 16x16 patches, embed each
+patch as a token, run through a standard transformer. Your EvoCUA
+backbone uses this for processing screenshots.</p>
+<p>CONVNEXT: A modernized ConvNet that matches ViT performance. Uses
+depthwise convolutions, inverted bottlenecks, GELU, LayerNorm. Your
+CNN policy uses ConvNeXt-Tiny because it preserves spatial structure
+better than ViT's [CLS] token for coordinate regression.</p>
+<p>CLIP: Contrastive model trained on 400M image-text pairs. Learns to
+align image and text in a shared embedding space. You use only the
+text encoder as a frozen subgoal encoder.</p>
+<p>FiLM CONDITIONING: output = scale * input + shift, where scale and
+shift are predicted from a conditioning signal. You use this for
+global conditioning ("what to do") while cross-attention handles
+spatial conditioning ("where to do it").</p>
+<p>CONTRASTIVE LEARNING: Train by pulling positive pairs together and
+pushing negative pairs apart. CLIP does this with image-text pairs.
+The loss is symmetric cross-entropy over a similarity matrix.</p>
+<p>SFT: Show the model (input, correct_output) pairs. Minimize
+cross-entropy on the output tokens. This is imitation learning /
+behavioral cloning in robotics terms.</p>
+<p>RLHF PIPELINE: SFT → reward model training → PPO optimization.
+InstructGPT pipeline. DPO skips the reward model by directly
+optimizing preferences. GRPO skips both by using group-relative
+ranking.</p>
+<p>REWARD SHAPING: Design RL rewards to be informative without being
+exploitable. Your DOM-based rewards (+0.3 popup dismissed, +0.5
+code entry, +1.0 step complete) give phase-level signals. Too sparse =
+never learns. Too dense = games the reward.</p>
+<p>GRADIENT ACCUMULATION: Run N forward/backward passes, sum gradients,
+then update. Simulates batch_size * N without using more memory.
+Your A100 config: micro-batch 4, grad_accum 4, effective batch 16.</p>
+<p>GRADIENT CHECKPOINTING: Don't store all intermediate activations.
+Recompute them during backward pass. Trades ~30% more compute for
+~40% less GPU memory. You use this on CUDA but not MPS.</p>
+<p>COSINE LEARNING RATE SCHEDULE: LR starts high, decays following a
+cosine curve to near-zero. Warmup phase at the start prevents large
+early updates from destabilizing training.</p>
+<p>MIXED PRECISION (bf16/fp16): Use 16-bit floats for forward/backward
+(speed + memory), 32-bit for weight updates (precision). bfloat16 on
+CUDA (more dynamic range), fp16 on MPS.</p>
+<p>INFERENCE vs TRAINING MEMORY: Training uses ~3-4x more memory than
+inference — need to store activations for backprop, optimizer states
+(AdamW stores 2 extra copies of parameters), and gradients.</p>
+<p>EPOCHS vs STEPS: Epoch = one full pass through all data. Step = one
+optimizer update. Your 857-example dataset with batch 4 and
+grad_accum 4 = 53 steps per epoch.</p>
+<p>TEMPERATURE: Scaling factor on logits before softmax. T&gt;1 = softer
+distribution (more random). T&lt;1 = sharper (more deterministic).
+T=0 = argmax (greedy). Used in sampling from your VLM policy.</p>
+<p>TOP-K / TOP-P SAMPLING: Restrict sampling to the top-k tokens or
+tokens comprising top-p probability mass. Prevents low-probability
+garbage tokens from being selected.</p>
+<p>BEAM SEARCH: Keep top-k sequences at each step, expand all, prune
+back to top-k. More compute per step but finds higher-probability
+sequences than greedy decoding.</p>
+<p>KNOWLEDGE DISTILLATION: Train student model to match teacher model's
+outputs. Original Hinton formulation uses soft labels (teacher's
+probability distribution, not just argmax). Your distillation uses
+hard labels (Claude's chosen action) which is behavioral cloning.</p>
+<p>BEHAVIORAL CLONING: Imitation learning by supervised learning on
+expert demonstrations. Your SFT on Claude's recordings IS behavioral
+cloning. Weakness: doesn't learn to recover from mistakes because
+the expert never makes them. This is why RL is supposed to help.</p>
+<p>WEIGHT DECAY: Regularization that pulls weights toward zero.
+Penalizes large weights. In AdamW, decoupled from the adaptive
+learning rate (this is the "W" — the distinction from vanilla Adam).</p>
+<p>DROPOUT: Randomly zero out neurons during training with probability p.
+Forces the network to not rely on any single neuron. Acts as
+ensemble regularization.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

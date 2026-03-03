@@ -1,0 +1,71 @@
+site_name: 'ML Interview Prep'
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+  font:
+    code: Roboto Mono
+  features:
+    - content.code.copy
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - toc.integrate
+  icon:
+    logo: fontawesome/solid/brain
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight:
+      linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.mark
+  - toc:
+      permalink: true
+  - tables
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Coding Drills:
+    - Overview: drills/index.md
+    - '00. PyTorch Basics': drills/00-pytorch-basics.md
+    - '01. Self-Attention': drills/01-self-attention.md
+    - '02. Multi-Head Attention': drills/02-multi-head-attention.md
+    - '03. Training Loop': drills/03-training-loop.md
+    - '04. Cross-Attention': drills/04-cross-attention.md
+    - '05. LoRA': drills/05-lora.md
+    - '06. Softmax & Cross-Entropy': drills/06-softmax-cross-entropy.md
+    - '07. Transformer Block': drills/07-transformer-block.md
+    - '08. Layer Norm': drills/08-layer-norm.md
+    - '09. FiLM Conditioning': drills/09-film-conditioning.md
+    - '10. Diffusion': drills/10-diffusion.md
+    - '11. KL Divergence & GRPO': drills/11-kl-divergence-grpo.md
+    - '12. Positional Encoding': drills/12-positional-encoding.md
+    - '13. Speed Run': drills/13-speed-run.md
+  - Interview Guide:
+    - Overview: interview/index.md
+    - 'Your Pitch': interview/pitch.md
+    - 'Core Concepts': interview/concepts.md
+    - 'Questions & Answers': interview/questions.md
+    - 'Math Reference': interview/math.md
+    - 'Study Plan': interview/study-plan.md
+    - 'Positioning': interview/positioning.md

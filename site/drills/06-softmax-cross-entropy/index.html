@@ -1,0 +1,1935 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../05-lora/">
+      
+      
+        <link rel="next" href="../07-transformer-block/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>06. Softmax & Cross-Entropy - ML Interview Prep</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#drill-06-softmax-cross-entropy-loss" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ML Interview Prep" class="md-header__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ML Interview Prep
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              06. Softmax & Cross-Entropy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Coding Drills
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../interview/" class="md-tabs__link">
+          
+  
+  
+  Interview Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ML Interview Prep" class="md-nav__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    ML Interview Prep
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Drills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Drills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-pytorch-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00. PyTorch Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-self-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01. Self-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-multi-head-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02. Multi-Head Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-training-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03. Training Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-cross-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04. Cross-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-lora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05. LoRA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06. Softmax & Cross-Entropy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06. Softmax & Cross-Entropy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intuition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-1-naive-softmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 1: Naive Softmax
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-2-the-numerical-instability-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 2: The Numerical Instability Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-3-the-fix-subtract-the-max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 3: The Fix — Subtract the Max
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-4-cross-entropy-from-softmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 4: Cross-Entropy from Softmax
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-5-what-your-training-loss-numbers-actually-mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 5: What Your Training Loss Numbers Actually Mean
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-implementation-reference-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Implementation: Reference Solutions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#your-turn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your Turn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-against-pytorch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification Against PyTorch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-implement-it-yourself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏋️ Practice — Implement It Yourself
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-transformer-block/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07. Transformer Block
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-layer-norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08. Layer Norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-film-conditioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09. FiLM Conditioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Diffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-kl-divergence-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. KL Divergence & GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-positional-encoding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Positional Encoding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-speed-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Speed Run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interview Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Interview Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/pitch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your Pitch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Questions & Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/study-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Study Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Positioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="drill-06-softmax-cross-entropy-loss">Drill 06 — Softmax &amp; Cross-Entropy Loss<a class="headerlink" href="#drill-06-softmax-cross-entropy-loss" title="Permanent link">&para;</a></h1>
+<h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
+<p>You already built softmax when you implemented attention — it turned raw dot-product
+scores into weights that sum to 1. That same function shows up everywhere.</p>
+<p><strong>Cross-entropy</strong> is the loss function used in SFT (supervised fine-tuning). When you
+trained your model and watched the loss drop from <strong>3.29 → 0.09</strong>, those numbers have
+a precise meaning:</p>
+<ul>
+<li><strong>Loss = 3.29</strong> → the model assigned <strong>exp(-3.29) ≈ 3.7%</strong> probability to the correct action</li>
+<li><strong>Loss = 0.09</strong> → the model assigned <strong>exp(-0.09) ≈ 91.4%</strong> probability to the correct action</li>
+</ul>
+<p>By the end of this notebook you'll:
+1. Implement softmax from scratch (with the stability trick interviewers love to ask about)
+2. Implement cross-entropy loss from scratch
+3. Understand exactly what your training loss numbers mean</p>
+<hr />
+<h2 id="intuition">Intuition<a class="headerlink" href="#intuition" title="Permanent link">&para;</a></h2>
+<p><strong>Softmax</strong> converts a vector of raw scores (logits) into a probability distribution:
+- All outputs are between 0 and 1
+- They sum to 1
+- Larger logits get larger probabilities</p>
+<p><strong>Cross-entropy</strong> measures how "wrong" a predicted probability distribution is:
+- If the model puts 100% on the correct class → loss = 0 (perfect)
+- If the model puts 0% on the correct class → loss = ∞ (catastrophic)</p>
+<p>They're connected by one clean formula:</p>
+<p><strong>CE loss = -log( softmax(logits)[correct_class] )</strong></p>
+<p>That's it. The loss is just the negative log of the probability the model assigned
+to the right answer.</p>
+<hr />
+<h2 id="building-block-1-naive-softmax">Building Block 1: Naive Softmax<a class="headerlink" href="#building-block-1-naive-softmax" title="Permanent link">&para;</a></h2>
+<p>The formula: <strong>softmax(x)_i = exp(x_i) / Σ exp(x_j)</strong></p>
+<p>Exponentiate each element, then divide by the sum. Let's try it.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">naive_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Softmax — the naive way.&quot;&quot;&quot;</span>
+    <span class="n">exps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exps</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exps</span><span class="p">)</span>
+
+<span class="c1"># Try it on small, friendly numbers</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="n">probs</span> <span class="o">=</span> <span class="n">naive_softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Logits:&quot;</span><span class="p">,</span> <span class="n">logits</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Probabilities:&quot;</span><span class="p">,</span> <span class="n">probs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sum:&quot;</span><span class="p">,</span> <span class="n">probs</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>  <span class="c1"># Should be 1.0</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Largest logit (2.0) → largest probability (</span><span class="si">{:.1%}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Smallest logit (0.1) → smallest probability (</span><span class="si">{:.1%}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="building-block-2-the-numerical-instability-problem">Building Block 2: The Numerical Instability Problem<a class="headerlink" href="#building-block-2-the-numerical-instability-problem" title="Permanent link">&para;</a></h2>
+<p>That naive version has a fatal flaw. Watch what happens with large logits:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># What happens with large numbers?</span>
+<span class="n">big_logits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1000.0</span><span class="p">,</span> <span class="mf">1001.0</span><span class="p">,</span> <span class="mf">1002.0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exp(1000) =&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>  <span class="c1"># inf!</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">naive_softmax</span><span class="p">(</span><span class="n">big_logits</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Naive softmax:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="c1"># Even without an error, we get nan (inf / inf = nan)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The result is full of nan — completely useless.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This WILL happen in real networks. Logits can get large.</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="building-block-3-the-fix-subtract-the-max">Building Block 3: The Fix — Subtract the Max<a class="headerlink" href="#building-block-3-the-fix-subtract-the-max" title="Permanent link">&para;</a></h2>
+<p>Here's the trick (and the interview answer):</p>
+<p><strong>softmax(x) = softmax(x - c)</strong> for any constant c.</p>
+<p>Proof: if we subtract c from every element:
+- Numerator: exp(x_i - c) = exp(x_i) · exp(-c)
+- Denominator: Σ exp(x_j - c) = exp(-c) · Σ exp(x_j)
+- The exp(-c) cancels!</p>
+<p>So we choose <strong>c = max(x)</strong>. This makes the largest exponent exp(0) = 1.
+No overflow possible.</p>
+<p>This is mathematically identical but numerically stable.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stable_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Softmax — numerically stable version.&quot;&quot;&quot;</span>
+    <span class="n">shifted</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>      <span class="c1"># Subtract max → largest value becomes 0</span>
+    <span class="n">exps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">shifted</span><span class="p">)</span>        <span class="c1"># exp(0) = 1, everything else &lt; 1</span>
+    <span class="k">return</span> <span class="n">exps</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exps</span><span class="p">)</span>
+
+<span class="c1"># Same small example — identical results</span>
+<span class="n">logits_small</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Naive:  &quot;</span><span class="p">,</span> <span class="n">naive_softmax</span><span class="p">(</span><span class="n">logits_small</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stable: &quot;</span><span class="p">,</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">logits_small</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Match:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">naive_softmax</span><span class="p">(</span><span class="n">logits_small</span><span class="p">),</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">logits_small</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Now the big example — stable version handles it fine</span>
+<span class="n">big_logits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1000.0</span><span class="p">,</span> <span class="mf">1001.0</span><span class="p">,</span> <span class="mf">1002.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stable softmax on [1000, 1001, 1002]:&quot;</span><span class="p">,</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">big_logits</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sum:&quot;</span><span class="p">,</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">big_logits</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No inf, no nan. Same math, safe numbers.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="building-block-4-cross-entropy-from-softmax">Building Block 4: Cross-Entropy from Softmax<a class="headerlink" href="#building-block-4-cross-entropy-from-softmax" title="Permanent link">&para;</a></h2>
+<p>Cross-entropy loss for a single example:</p>
+<p><strong>loss = -log( prob[correct_class] )</strong></p>
+<p>Why the log?
+- If prob = 1.0 (perfect): loss = -log(1) = <strong>0</strong> ✓
+- If prob = 0.5 (coin flip): loss = -log(0.5) = <strong>0.693</strong>
+- If prob = 0.01 (very wrong): loss = -log(0.01) = <strong>4.605</strong>
+- If prob → 0 (disastrously wrong): loss → <strong>∞</strong></p>
+<p>The log creates a steep penalty as the model gets more confident about the WRONG answer.
+This is exactly what you want during training.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">cross_entropy_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">target_idx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cross-entropy loss given probabilities and the correct class index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">target_idx</span><span class="p">])</span>
+
+<span class="c1"># Example: 3 classes, correct class is index 1</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">probs</span> <span class="o">=</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Logits:&quot;</span><span class="p">,</span> <span class="n">logits</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Probabilities:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Probability on correct class (idx </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">probs</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-entropy loss: </span><span class="si">{</span><span class="n">cross_entropy_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># What if the model is very wrong?</span>
+<span class="n">logits_wrong</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>  <span class="c1"># Correct class (1) has low logit</span>
+<span class="n">probs_wrong</span> <span class="o">=</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">logits_wrong</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Logits (model is wrong):&quot;</span><span class="p">,</span> <span class="n">logits_wrong</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Probabilities:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">probs_wrong</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Probability on correct class (idx </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">probs_wrong</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-entropy loss: </span><span class="si">{</span><span class="n">cross_entropy_from_probs</span><span class="p">(</span><span class="n">probs_wrong</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;↑ Much higher loss when the model is wrong&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="building-block-5-what-your-training-loss-numbers-actually-mean">Building Block 5: What Your Training Loss Numbers Actually Mean<a class="headerlink" href="#building-block-5-what-your-training-loss-numbers-actually-mean" title="Permanent link">&para;</a></h2>
+<p>Remember: <strong>loss = -log(prob_correct)</strong>, so <strong>prob_correct = exp(-loss)</strong>.</p>
+<p>Let's decode the loss values from your SFT training run:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Loss&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Prob on correct action&#39;</span><span class="si">:</span><span class="s2">&gt;22</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Meaning&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.29</span><span class="p">,</span> <span class="mf">2.30</span><span class="p">,</span> <span class="mf">1.61</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Start of training&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;~10</span><span class="si">% c</span><span class="s2">orrect&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;~20</span><span class="si">% c</span><span class="s2">orrect&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Getting somewhere&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;More right than wrong&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Near convergence&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Your final loss!&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">loss</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">loss</span><span class="p">)</span>
+    <span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">prob</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">   →  </span><span class="si">{</span><span class="n">prob</span><span class="si">:</span><span class="s2">6.1%</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">bar</span><span class="si">:</span><span class="s2">30s</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your model went from assigning 3.7% probability to the&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;correct action to assigning 91.4%. That&#39;s what training did.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="complete-implementation-reference-solutions">Complete Implementation: Reference Solutions<a class="headerlink" href="#complete-implementation-reference-solutions" title="Permanent link">&para;</a></h2>
+<p>Here are the final, clean implementations:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Numerically stable softmax.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: numpy array of logits (any shape along last axis)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Probability distribution (same shape as x, sums to 1 along last axis)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shifted</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">exps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">shifted</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exps</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">cross_entropy_loss</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">target_idx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cross-entropy loss from raw logits.</span>
+
+<span class="sd">    Combines softmax + negative log likelihood in one function.</span>
+<span class="sd">    Uses the log-sum-exp trick for extra numerical stability.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logits: numpy array of raw scores, shape (num_classes,)</span>
+<span class="sd">        target_idx: integer index of the correct class</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Scalar loss value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Log-softmax is more stable than log(softmax(x))</span>
+    <span class="c1"># log_softmax(x)_i = x_i - log(sum(exp(x)))</span>
+    <span class="c1"># With stability trick: x_i - max(x) - log(sum(exp(x - max(x))))</span>
+    <span class="n">shifted</span> <span class="o">=</span> <span class="n">logits</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+    <span class="n">log_sum_exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">shifted</span><span class="p">)))</span>
+    <span class="n">log_probs</span> <span class="o">=</span> <span class="n">shifted</span> <span class="o">-</span> <span class="n">log_sum_exp</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">log_probs</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span>
+
+
+<span class="c1"># Quick demo</span>
+<span class="n">demo_logits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+<span class="n">demo_target</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># correct class</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Logits:      &quot;</span><span class="p">,</span> <span class="n">demo_logits</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Softmax:     &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">demo_logits</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sum check:   &quot;</span><span class="p">,</span> <span class="n">softmax</span><span class="p">(</span><span class="n">demo_logits</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CE Loss:      </span><span class="si">{</span><span class="n">cross_entropy_loss</span><span class="p">(</span><span class="n">demo_logits</span><span class="p">,</span><span class="w"> </span><span class="n">demo_target</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prob correct: </span><span class="si">{</span><span class="n">softmax</span><span class="p">(</span><span class="n">demo_logits</span><span class="p">)[</span><span class="n">demo_target</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Check: -log(prob) = </span><span class="si">{</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">demo_logits</span><span class="p">)[</span><span class="n">demo_target</span><span class="p">])</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="your-turn">Your Turn<a class="headerlink" href="#your-turn" title="Permanent link">&para;</a></h2>
+<p>Implement both functions from scratch. Don't peek at the reference above!</p>
+<p><strong>Softmax requirements:</strong>
+- Subtract the max for numerical stability
+- Works on 1D numpy arrays
+- Output sums to 1</p>
+<p><strong>Cross-entropy requirements:</strong>
+- Take raw logits (not probabilities) and a target index
+- Return a scalar loss value
+- Handle large logits without overflow</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">my_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement numerically stable softmax.</span>
+
+<span class="sd">    Steps:</span>
+<span class="sd">    1. Subtract max(x) from x</span>
+<span class="sd">    2. Exponentiate</span>
+<span class="sd">    3. Divide by sum</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>  <span class="c1"># YOUR CODE HERE</span>
+
+
+<span class="c1"># Quick test (uncomment when ready)</span>
+<span class="c1"># test = np.array([2.0, 1.0, 0.1])</span>
+<span class="c1"># print(my_softmax(test))</span>
+<span class="c1"># print(&quot;Sum:&quot;, my_softmax(test).sum())</span>
+
+<span class="k">def</span> <span class="nf">my_cross_entropy_loss</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">target_idx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement cross-entropy loss from raw logits.</span>
+
+<span class="sd">    Steps:</span>
+<span class="sd">    1. Compute softmax (use your my_softmax function)</span>
+<span class="sd">    2. Take the probability of the correct class</span>
+<span class="sd">    3. Return -log of that probability</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>  <span class="c1"># YOUR CODE HERE</span>
+
+
+<span class="c1"># Quick test (uncomment when ready)</span>
+<span class="c1"># test_logits = np.array([1.5, 3.0, 0.5, -1.0])</span>
+<span class="c1"># print(f&quot;Your CE loss: {my_cross_entropy_loss(test_logits, 1):.4f}&quot;)</span>
+<span class="c1"># print(f&quot;Reference:    {cross_entropy_loss(test_logits, 1):.4f}&quot;)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="verification-against-pytorch">Verification Against PyTorch<a class="headerlink" href="#verification-against-pytorch" title="Permanent link">&para;</a></h2>
+<p>Let's compare our implementations against PyTorch's battle-tested versions.
+This is how you know you got it right.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing softmax...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">test_logits</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Small values&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">&quot;Large values&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1000.0</span><span class="p">,</span> <span class="mf">1001.0</span><span class="p">,</span> <span class="mf">1002.0</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">&quot;Negative values&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">&quot;Random (10 classes)&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="n">ours</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">test_logits</span><span class="p">)</span>
+    <span class="n">theirs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">test_logits</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ours</span><span class="p">,</span> <span class="n">theirs</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;PASS ✓&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL ✗&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing cross-entropy loss...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">logits_np</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;Confident correct&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]),</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Confident wrong&quot;</span><span class="p">,</span>   <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]),</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Uniform-ish&quot;</span><span class="p">,</span>       <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Large logits&quot;</span><span class="p">,</span>      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">500.0</span><span class="p">,</span> <span class="mf">501.0</span><span class="p">,</span> <span class="mf">499.0</span><span class="p">]),</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Random (10 cls)&quot;</span><span class="p">,</span>   <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="n">ours</span> <span class="o">=</span> <span class="n">cross_entropy_loss</span><span class="p">(</span><span class="n">logits_np</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">theirs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">logits_np</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">target</span><span class="p">])</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">ours</span><span class="p">,</span> <span class="n">theirs</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">25s</span><span class="si">}</span><span class="s2"> ours=</span><span class="si">{</span><span class="n">ours</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  torch=</span><span class="si">{</span><span class="n">theirs</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;PASS ✓&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL ✗&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All tests passed! Your implementation matches PyTorch.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="key-takeaways">Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Softmax</strong> = exp(x) / sum(exp(x)), but ALWAYS subtract the max first</li>
+<li><strong>Cross-entropy loss</strong> = -log(softmax(logits)[correct_class])</li>
+<li><strong>Loss value meaning</strong>: prob_correct = exp(-loss)</li>
+<li>Loss 3.29 → 3.7% confidence on correct answer</li>
+<li>Loss 0.09 → 91.4% confidence on correct answer</li>
+<li><strong>The stability trick</strong> (subtract max) is a standard interview question — know why it works</li>
+<li>In practice, libraries fuse softmax + log + negative into one numerically stable operation</li>
+</ol>
+<p>These two functions are the foundation of classification training. Every time you
+see <code>F.cross_entropy</code> in PyTorch, you now know exactly what's happening inside.</p>
+<hr />
+<h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>
+<p>Copy the stubs below into your editor. Implement without looking at the code above. Run the test cell to verify.</p>
+<h1 id="drill-6a-softmax">Drill 6a: Softmax<a class="headerlink" href="#drill-6a-softmax" title="Permanent link">&para;</a></h1>
+<p>Implement numerically stable softmax from scratch.
+- Subtract max along last dim before exp (prevents overflow)
+- Apply along last dim (dim=-1) for any input shape
+- Return tensor of same shape with values summing to 1 along last dim</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">my_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numerically stable softmax along last dimension.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: subtract max along last dim (keepdim=True) for stability</span>
+    <span class="c1"># TODO: exponentiate</span>
+    <span class="c1"># TODO: divide by sum along last dim (keepdim=True)</span>
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># TEST: softmax</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">my_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">ref</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Shape mismatch: </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Max diff: </span><span class="si">{</span><span class="p">(</span><span class="n">out</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">),</span> <span class="s2">&quot;Rows don&#39;t sum to 1&quot;</span>
+
+<span class="c1"># also test 3D input</span>
+<span class="n">x3d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">out3d</span> <span class="o">=</span> <span class="n">my_softmax</span><span class="p">(</span><span class="n">x3d</span><span class="p">)</span>
+<span class="n">ref3d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x3d</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out3d</span><span class="p">,</span> <span class="n">ref3d</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">),</span> <span class="s2">&quot;Failed on 3D input&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;softmax: ALL TESTS PASSED&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h1 id="drill-6b-cross-entropy-loss">Drill 6b: Cross-Entropy Loss<a class="headerlink" href="#drill-6b-cross-entropy-loss" title="Permanent link">&para;</a></h1>
+<p>Implement cross-entropy loss using your my_softmax.
+- Apply softmax to logits to get probabilities
+- For each sample, pick the probability of the correct class
+- Compute -log(prob) and return the mean over the batch</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">my_cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cross-entropy loss. logits: (B, C), targets: (B,) class indices.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: get probabilities using my_softmax</span>
+    <span class="c1"># TODO: gather/index the probability of the correct class for each sample</span>
+    <span class="c1"># TODO: compute -log(correct_probs).mean()</span>
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># TEST: cross-entropy</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,))</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">my_cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">ref</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Shape mismatch: </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Mismatch: </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cross_entropy: </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> vs reference </span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cross_entropy: ALL TESTS PASSED&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2260 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../09-film-conditioning/">
+      
+      
+        <link rel="next" href="../11-kl-divergence-grpo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>10. Diffusion - ML Interview Prep</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#drill-10-ddpm-diffusion-forward-noising-denoising" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ML Interview Prep" class="md-header__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ML Interview Prep
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              10. Diffusion
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Coding Drills
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../interview/" class="md-tabs__link">
+          
+  
+  
+  Interview Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ML Interview Prep" class="md-nav__button md-logo" aria-label="ML Interview Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M120 56c0-30.9 25.1-56 56-56h24c17.7 0 32 14.3 32 32v448c0 17.7-14.3 32-32 32h-32c-29.8 0-54.9-20.4-62-48h-2c-44.2 0-80-35.8-80-80 0-18 6-34.6 16-48-19.4-14.6-32-37.8-32-64 0-30.9 17.6-57.8 43.2-71.1-7.1-12-11.2-26-11.2-40.9 0-44.2 35.8-80 80-80zm272 0v24c44.2 0 80 35.8 80 80 0 15-4.1 29-11.2 40.9C486.5 214.2 504 241 504 272c0 26.2-12.6 49.4-32 64 10 13.4 16 30 16 48 0 44.2-35.8 80-80 80h-2c-7.1 27.6-32.2 48-62 48h-32c-17.7 0-32-14.3-32-32V32c0-17.7 14.3-32 32-32h24c30.9 0 56 25.1 56 56"/></svg>
+
+    </a>
+    ML Interview Prep
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Drills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Coding Drills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-pytorch-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00. PyTorch Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-self-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01. Self-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-multi-head-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02. Multi-Head Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-training-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03. Training Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-cross-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04. Cross-Attention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-lora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05. LoRA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-softmax-cross-entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06. Softmax & Cross-Entropy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-transformer-block/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    07. Transformer Block
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-layer-norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    08. Layer Norm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-film-conditioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    09. FiLM Conditioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Diffusion
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Diffusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-core-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Core Idea
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Core Idea">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forward-process-adding-noise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forward process (adding noise)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backward-process-removing-noise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backward process (removing noise)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-1-beta-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 1: Beta Schedule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-2-alpha-and-alpha-bar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 2: Alpha and Alpha-Bar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-3-forward-noising-the-reparameterization-trick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 3: Forward Noising (The Reparameterization Trick)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-4-the-training-objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 4: The Training Objective
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-5-one-denoising-step-the-reverse-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 5: One Denoising Step (The Reverse Process)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-block-6-ddim-vs-ddpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building Block 6: DDIM vs DDPM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-all-together-ddpmschedule-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting It All Together: DDPMSchedule Class
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting It All Together: DDPMSchedule Class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#demo-full-round-trip-with-an-oracle-predictor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Demo: Full Round-Trip with an Oracle Predictor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#your-turn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your Turn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practice-implement-it-yourself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏋️ Practice — Implement It Yourself
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-kl-divergence-grpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. KL Divergence & GRPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-positional-encoding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Positional Encoding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-speed-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Speed Run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interview Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Interview Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/pitch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your Pitch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Questions & Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/study-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Study Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interview/positioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Positioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="drill-10-ddpm-diffusion-forward-noising-denoising">Drill 10 — DDPM Diffusion: Forward Noising &amp; Denoising<a class="headerlink" href="#drill-10-ddpm-diffusion-forward-noising-denoising" title="Permanent link">&para;</a></h1>
+<h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
+<p>Your CNN policy <strong>is</strong> a diffusion policy (Chi et al., 2023 — <em>Diffusion Policy</em>).
+It doesn't denoise images — it denoises <strong>action vectors</strong>.</p>
+<p>Here's what happens every time your policy runs:</p>
+<ol>
+<li>Start with pure noise: a random 10-dim vector (8 action-type logits + 2 coordinates)</li>
+<li>The CNN looks at the current observation + that noisy vector</li>
+<li>It predicts the noise component</li>
+<li>Subtract (a scaled version of) that noise → slightly cleaner action vector</li>
+<li>Repeat for a few steps → clean action prediction</li>
+</ol>
+<p><strong>Training</strong>: 100 timesteps, linear beta schedule
+<strong>Inference</strong>: 10 DDIM steps (skipping timesteps for speed)</p>
+<p>This notebook builds every piece from scratch so you understand exactly what
+<code>add_noise()</code> and <code>denoise_step()</code> do inside your policy.</p>
+<h2 id="the-core-idea">The Core Idea<a class="headerlink" href="#the-core-idea" title="Permanent link">&para;</a></h2>
+<h3 id="forward-process-adding-noise">Forward process (adding noise)<a class="headerlink" href="#forward-process-adding-noise" title="Permanent link">&para;</a></h3>
+<p>Given a clean sample $x_0$, we can create a noisy version at ANY timestep $t$:</p>
+<p>$$x_t = \sqrt{\bar\alpha_t}\; x_0 \;+\; \sqrt{1 - \bar\alpha_t}\; \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$$</p>
+<p><strong>Key insight</strong>: $\bar\alpha_t$ is a cumulative product, so you can jump straight
+to timestep $t$ — no need to noise step-by-step. This is the reparameterization trick.</p>
+<ul>
+<li>At $t=0$: $\bar\alpha \approx 1$ → almost all signal, almost no noise</li>
+<li>At $t=T$: $\bar\alpha \approx 0$ → almost pure noise</li>
+</ul>
+<h3 id="backward-process-removing-noise">Backward process (removing noise)<a class="headerlink" href="#backward-process-removing-noise" title="Permanent link">&para;</a></h3>
+<p>A neural network $\epsilon_\theta(x_t, t)$ learns to predict which noise was added.
+Then we reverse one step:</p>
+<p>$$x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}} \epsilon_\theta(x_t, t) \right) + \sigma_t z$$</p>
+<h3 id="training-loss">Training loss<a class="headerlink" href="#training-loss" title="Permanent link">&para;</a></h3>
+<p>Dead simple — just MSE between the true noise and predicted noise:</p>
+<p>$$\mathcal{L} = | \epsilon - \epsilon_\theta(x_t, t) |^2$$</p>
+<p>That's it. Sample a random $t$, noise $x_0$ to get $x_t$, predict the noise, compute MSE.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># number of diffusion timesteps (same as your policy)</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># action vector dimension (8 action types + 2 coords)</span>
+
+<span class="c1"># A fake &quot;clean&quot; action vector — our x_0</span>
+<span class="c1"># Think of this as: [action_type_logits..., x_coord, y_coord]</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 (clean action): </span><span class="si">{</span><span class="n">x_0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  action type logits: </span><span class="si">{</span><span class="n">x_0</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  coordinates:        </span><span class="si">{</span><span class="n">x_0</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-1-beta-schedule">Building Block 1: Beta Schedule<a class="headerlink" href="#building-block-1-beta-schedule" title="Permanent link">&para;</a></h2>
+<p>$\beta_t$ controls how much noise is added at each step.
+Linear schedule from $\beta_1 = 10^{-4}$ (tiny noise) to $\beta_T = 0.02$ (more noise).</p>
+<p>Small betas → gradual noising → easier for the network to learn the reverse.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Linear beta schedule — same as the original DDPM paper</span>
+<span class="n">betas</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;beta_1  = </span><span class="si">{</span><span class="n">betas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">  (barely any noise)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;beta_T  = </span><span class="si">{</span><span class="n">betas</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">  (more noise)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;shape:    </span><span class="si">{</span><span class="n">betas</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">betas</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Timestep t&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;β_t&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Linear Beta Schedule&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-2-alpha-and-alpha-bar">Building Block 2: Alpha and Alpha-Bar<a class="headerlink" href="#building-block-2-alpha-and-alpha-bar" title="Permanent link">&para;</a></h2>
+<ul>
+<li>$\alpha_t = 1 - \beta_t$ (how much signal is <em>kept</em> at step $t$)</li>
+<li>$\bar\alpha_t = \prod_{s=1}^{t} \alpha_s$ (cumulative — how much signal survives from step 0 to $t$)</li>
+</ul>
+<p>$\bar\alpha_t$ is the magic number. It tells you the signal-to-noise ratio at any timestep.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">alphas</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">betas</span>
+<span class="n">alpha_bars</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha_bar at t=0:   </span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  (almost all signal)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha_bar at t=49:  </span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">49</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  (about half)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha_bar at t=99:  </span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  (almost no signal)&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">alphas</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;α_t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Timestep t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;α_t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Alpha (per-step signal retention)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">alpha_bars</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ᾱ_t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Timestep t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ᾱ_t&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Alpha-Bar (cumulative signal retention)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Interpretation:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  sqrt(alpha_bar_0)  = </span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> → signal coefficient at t=0&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  sqrt(alpha_bar_99) = </span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> → signal coefficient at t=99&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  sqrt(1 - alpha_bar_99) = </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">99</span><span class="p">])</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> → noise coefficient at t=99&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-3-forward-noising-the-reparameterization-trick">Building Block 3: Forward Noising (The Reparameterization Trick)<a class="headerlink" href="#building-block-3-forward-noising-the-reparameterization-trick" title="Permanent link">&para;</a></h2>
+<p>$$x_t = \underbrace{\sqrt{\bar\alpha_t}}<em _text_noise="\text{noise" scale="scale">{\text{signal scale}} \cdot x_0 + \underbrace{\sqrt{1 - \bar\alpha_t}}</em> \cdot \epsilon$$}</p>
+<p>This is <strong>the</strong> equation. You can jump to any timestep directly.
+No need to noise step by step — that's the beauty of the math.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">forward_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add noise to x_0 to get x_t. Returns (x_t, epsilon).&quot;&quot;&quot;</span>
+    <span class="n">abar</span> <span class="o">=</span> <span class="n">alpha_bars</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+    <span class="n">x_t</span> <span class="o">=</span> <span class="n">abar</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">epsilon</span>
+    <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">epsilon</span>
+
+<span class="c1"># Show x_0 getting progressively noisier</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">timesteps_to_show</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">timesteps_to_show</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">idx</span> <span class="o">//</span> <span class="mi">3</span><span class="p">][</span><span class="n">idx</span> <span class="o">%</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">x_t</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">forward_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">)</span>
+
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;tab:red&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span> <span class="n">x_t</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;t=</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">  (ᾱ=</span><span class="si">{</span><span class="n">alpha_bars</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;a</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Forward Process: Clean Action → Pure Noise&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Notice:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  t=0:  The action vector is almost unchanged (ᾱ ≈ 1)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  t=99: It&#39;s basically random noise (ᾱ ≈ 0)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  The one-hot action type and coordinates get buried in noise&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-4-the-training-objective">Building Block 4: The Training Objective<a class="headerlink" href="#building-block-4-the-training-objective" title="Permanent link">&para;</a></h2>
+<p>During training, the network sees $(x_t, t)$ and must predict $\epsilon$ — the noise that was added.</p>
+<p>$$\mathcal{L} = \text{MSE}(\epsilon, \; \epsilon_\theta(x_t, t))$$</p>
+<p>That's the entire loss function. Let's simulate one training step with a dummy "network".</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Simulate one training step</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="c1"># 1. Sample a random timestep</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+<span class="c1"># 2. Noise the clean action</span>
+<span class="n">x_t</span><span class="p">,</span> <span class="n">epsilon_true</span> <span class="o">=</span> <span class="n">forward_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">)</span>
+
+<span class="c1"># 3. Pretend our network predicts something (random for now)</span>
+<span class="n">epsilon_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>  <span class="c1"># a real network would do better!</span>
+
+<span class="c1"># 4. Compute MSE loss</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">epsilon_pred</span><span class="p">,</span> <span class="n">epsilon_true</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sampled timestep: t = </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;True noise (first 4):      </span><span class="si">{</span><span class="n">epsilon_true</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predicted noise (first 4): </span><span class="si">{</span><span class="n">epsilon_pred</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSE loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A random prediction gives loss ≈ 2.0 (two unit gaussians).&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A perfect prediction gives loss = 0.0.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your CNN policy has been trained to get this close to 0.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-5-one-denoising-step-the-reverse-process">Building Block 5: One Denoising Step (The Reverse Process)<a class="headerlink" href="#building-block-5-one-denoising-step-the-reverse-process" title="Permanent link">&para;</a></h2>
+<p>Given $x_t$ and a noise prediction $\epsilon_\theta$, compute $x_{t-1}$:</p>
+<p>$$x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{\beta_t}{\sqrt{1 - \bar\alpha_t}} \cdot \epsilon_\theta \right) + \sigma_t \cdot z$$</p>
+<p>Where:
+- First term removes the predicted noise (scaled appropriately)
+- $\sigma_t = \sqrt{\beta_t}$ adds a small amount of fresh noise (stochasticity)
+- $z \sim \mathcal{N}(0, I)$, but $z = 0$ at the final step ($t = 0$)</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">denoise_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">epsilon_pred</span><span class="p">,</span> <span class="n">betas</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One DDPM reverse step: x_t → x_{t-1}.&quot;&quot;&quot;</span>
+    <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">alphas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+    <span class="n">abar_t</span> <span class="o">=</span> <span class="n">alpha_bars</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+    <span class="n">beta_t</span> <span class="o">=</span> <span class="n">betas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+    <span class="c1"># The mean of x_{t-1}</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="n">beta_t</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar_t</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">alpha_t</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_t</span> <span class="o">-</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">epsilon_pred</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mean</span>  <span class="c1"># no noise at final step</span>
+
+    <span class="c1"># Add stochastic noise</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">beta_t</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">z</span>
+
+<span class="c1"># Demo: if we had a PERFECT noise predictor, one step would help</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">x_t</span><span class="p">,</span> <span class="n">epsilon_true</span> <span class="o">=</span> <span class="n">forward_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">)</span>
+
+<span class="c1"># Use the TRUE epsilon (perfect oracle predictor)</span>
+<span class="n">x_prev</span> <span class="o">=</span> <span class="n">denoise_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">epsilon_true</span><span class="p">,</span> <span class="n">betas</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 (original):     </span><span class="si">{</span><span class="n">x_0</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_t (noised, t=</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">x_t</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_</span><span class="se">{{</span><span class="s2">t-1</span><span class="se">}}</span><span class="s2"> (denoised):  </span><span class="si">{</span><span class="n">x_prev</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;One step moves x_t closer to x_0, but doesn&#39;t fully recover it.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You need to chain many steps: x_T → x_{T-1} → ... → x_0&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-block-6-ddim-vs-ddpm">Building Block 6: DDIM vs DDPM<a class="headerlink" href="#building-block-6-ddim-vs-ddpm" title="Permanent link">&para;</a></h2>
+<p><strong>DDPM</strong> (what we just built): denoise one step at a time. 100 timesteps → 100 network calls. Slow.</p>
+<p><strong>DDIM</strong> (Song et al., 2020): a deterministic variant that can <strong>skip timesteps</strong>.</p>
+<p>Instead of going $x_{99} \to x_{98} \to \ldots \to x_0$ (100 steps), DDIM picks a subset:</p>
+<p>$$x_{99} \to x_{89} \to x_{79} \to \ldots \to x_9 \to x_0 \quad \text{(10 steps!)}$$</p>
+<p>The formula is slightly different (no added noise, uses a different interpolation), but
+the idea is the same: predict noise, subtract it, jump to a much earlier timestep.</p>
+<p><strong>Your policy uses DDIM with 10 inference steps</strong> — that's why inference is fast enough
+for real-time robot control. Training still uses all 100 timesteps for the loss.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># DDIM step (simplified, deterministic)</span>
+<span class="k">def</span> <span class="nf">ddim_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">t_now</span><span class="p">,</span> <span class="n">t_next</span><span class="p">,</span> <span class="n">epsilon_pred</span><span class="p">,</span> <span class="n">alpha_bars</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DDIM step: jump from timestep t_now to t_next (t_next &lt; t_now).&quot;&quot;&quot;</span>
+    <span class="n">abar_now</span> <span class="o">=</span> <span class="n">alpha_bars</span><span class="p">[</span><span class="n">t_now</span><span class="p">]</span>
+    <span class="n">abar_next</span> <span class="o">=</span> <span class="n">alpha_bars</span><span class="p">[</span><span class="n">t_next</span><span class="p">]</span> <span class="k">if</span> <span class="n">t_next</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># Predict x_0 from x_t and epsilon</span>
+    <span class="n">x0_pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_t</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar_now</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">epsilon_pred</span><span class="p">)</span> <span class="o">/</span> <span class="n">abar_now</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+
+    <span class="c1"># Interpolate to get x_{t_next}</span>
+    <span class="n">x_next</span> <span class="o">=</span> <span class="n">abar_next</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0_pred</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar_next</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">epsilon_pred</span>
+    <span class="k">return</span> <span class="n">x_next</span>
+
+<span class="c1"># Demo: 10-step DDIM schedule (same as your policy)</span>
+<span class="n">ddim_timesteps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">))</span>  <span class="c1"># [99, 89, 79, ..., 9]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DDIM timesteps (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ddim_timesteps</span><span class="p">)</span><span class="si">}</span><span class="s2"> steps): </span><span class="si">{</span><span class="n">ddim_timesteps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vs DDPM: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="si">}</span><span class="s2"> (100 steps)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Same network, 10x fewer calls. That&#39;s why your policy is fast.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="putting-it-all-together-ddpmschedule-class">Putting It All Together: DDPMSchedule Class<a class="headerlink" href="#putting-it-all-together-ddpmschedule-class" title="Permanent link">&para;</a></h2>
+<p>This is essentially what lives inside your diffusion policy.
+Two key methods:
+- <code>add_noise(x_0, t, noise)</code> — used during <strong>training</strong> to create noisy samples
+- <code>denoise_step(x_t, t, noise_pred)</code> — used during <strong>inference</strong> to clean up</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DDPMSchedule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimal DDPM noise schedule for 1D action vectors.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">beta_start</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta_end</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">betas</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">beta_start</span><span class="p">,</span> <span class="n">beta_end</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alphas</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha_bars</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward process: x_0 → x_t.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_0: clean sample [dim] or [batch, dim]</span>
+<span class="sd">            t: int timestep (0 to T-1)</span>
+<span class="sd">            noise: optional pre-sampled noise (same shape as x_0)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x_t: noisy sample</span>
+<span class="sd">            noise: the noise that was added (for computing training loss)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">abar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">x_t</span> <span class="o">=</span> <span class="n">abar</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">noise</span>
+        <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">noise</span>
+
+    <span class="k">def</span> <span class="nf">denoise_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise_pred</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reverse process: x_t → x_{t-1} (DDPM).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_t: noisy sample at timestep t</span>
+<span class="sd">            t: current timestep</span>
+<span class="sd">            noise_pred: network&#39;s prediction of the noise in x_t</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x_{t-1}: slightly less noisy sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alphas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">abar_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">beta_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+        <span class="n">coeff</span> <span class="o">=</span> <span class="n">beta_t</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar_t</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">alpha_t</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_t</span> <span class="o">-</span> <span class="n">coeff</span> <span class="o">*</span> <span class="n">noise_pred</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mean</span>
+
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">beta_t</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">z</span>
+
+    <span class="k">def</span> <span class="nf">full_denoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_T</span><span class="p">,</span> <span class="n">noise_predictor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run full DDPM reverse chain: x_T → x_0.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_T: pure noise sample</span>
+<span class="sd">            noise_predictor: callable(x_t, t) → predicted noise</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x_0: denoised sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x_T</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">noise_pred</span> <span class="o">=</span> <span class="n">noise_predictor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">denoise_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise_pred</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">schedule</span> <span class="o">=</span> <span class="n">DDPMSchedule</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DDPMSchedule created with T=</span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  betas range: [</span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">betas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">betas</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  alpha_bar range: [</span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="demo-full-round-trip-with-an-oracle-predictor">Demo: Full Round-Trip with an Oracle Predictor<a class="headerlink" href="#demo-full-round-trip-with-an-oracle-predictor" title="Permanent link">&para;</a></h3>
+<p>To verify our math works, we'll use a "cheating" noise predictor that knows the
+true noise. In your real policy, the CNN fills this role.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="c1"># Our clean action vector</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+
+<span class="c1"># Add noise to get x_T (full noise)</span>
+<span class="n">x_t</span><span class="p">,</span> <span class="n">true_noise</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0:  </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_99: </span><span class="si">{</span><span class="n">x_t</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_99 looks like random noise — the action is completely buried.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Denoise with oracle predictor (cheating — knows the true noise)</span>
+<span class="c1"># In practice: the CNN would predict different noise at each step</span>
+<span class="c1"># For this demo, we use the original noise as an approximation</span>
+<span class="n">x_recovered</span> <span class="o">=</span> <span class="n">x_t</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># A perfect oracle for step 99&#39;s noise (approximate for other steps)</span>
+    <span class="n">x_recovered</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">denoise_step</span><span class="p">(</span><span class="n">x_recovered</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">true_noise</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 recovered: </span><span class="si">{</span><span class="n">x_recovered</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 original:  </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Note: Recovery isn&#39;t perfect because we used the same noise estimate&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;for all timesteps. A trained network adapts its prediction per step.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="your-turn">Your Turn<a class="headerlink" href="#your-turn" title="Permanent link">&para;</a></h2>
+<p>Exercises:
+1. Create a DDPMSchedule with <code>T=200</code> and a cosine-shaped alpha_bar (google "cosine noise schedule"). Plot it against the linear one.
+2. Write a <code>ddim_denoise()</code> method that takes a list of timesteps (e.g., <code>[99, 89, ..., 9]</code>) and denoises using DDIM steps. Compare speed vs full DDPM.
+3. Batch it: modify <code>add_noise</code> to handle a batch of different timesteps (one per sample). Hint: <code>t</code> becomes a tensor and you need to index <code>alpha_bars[t]</code> with broadcasting.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Your code here</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
+<p>Run these to verify your DDPMSchedule implementation is correct.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># ── Tests ──────────────────────────────────────────────────────────────────</span>
+<span class="n">sched</span> <span class="o">=</span> <span class="n">DDPMSchedule</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Test 1: schedule shapes</span>
+<span class="k">assert</span> <span class="n">sched</span><span class="o">.</span><span class="n">betas</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;betas shape: </span><span class="si">{</span><span class="n">sched</span><span class="o">.</span><span class="n">betas</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">sched</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;alphas shape: </span><span class="si">{</span><span class="n">sched</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;alpha_bars shape: </span><span class="si">{</span><span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Test 2: alpha_bar is decreasing</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;</span> <span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s2">&quot;alpha_bar should be monotonically decreasing&quot;</span>
+
+<span class="c1"># Test 3: alpha_bar stays in (0, 1)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s2">&quot;alpha_bar must be in (0,1)&quot;</span>
+
+<span class="c1"># Test 4: add_noise at t=0 barely changes x_0</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">x_noised</span><span class="p">,</span> <span class="n">noise</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">error_t0</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_noised</span> <span class="o">-</span> <span class="n">x_test</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">error_t0</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;At t=0, noise should be tiny, got max error </span><span class="si">{</span><span class="n">error_t0</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Test 5: add_noise at t=99 should make it look like noise</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x_noised_99</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
+<span class="c1"># signal is sqrt(alpha_bar_99) ≈ 0.08, so x_test contribution is small</span>
+<span class="n">signal_strength</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">signal_strength</span> <span class="o">&lt;</span> <span class="mf">0.15</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Signal at t=99 should be small, got </span><span class="si">{</span><span class="n">signal_strength</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Test 6: add_noise with provided noise is deterministic</span>
+<span class="n">noise_fixed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="n">x_a</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise_fixed</span><span class="p">)</span>
+<span class="n">x_b</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise_fixed</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x_a</span><span class="p">,</span> <span class="n">x_b</span><span class="p">),</span> <span class="s2">&quot;add_noise with same noise should be deterministic&quot;</span>
+
+<span class="c1"># Test 7: denoise_step at t=0 returns mean (no stochastic noise)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">noise_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">denoise_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">noise_pred</span><span class="p">)</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">denoise_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">noise_pred</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">result1</span><span class="p">,</span> <span class="n">result2</span><span class="p">),</span> <span class="s2">&quot;denoise at t=0 should be deterministic&quot;</span>
+
+<span class="c1"># Test 8: alpha relationship</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">alphas</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">sched</span><span class="o">.</span><span class="n">betas</span><span class="p">),</span> <span class="s2">&quot;alphas = 1 - betas&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All tests passed! ✓&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your DDPMSchedule correctly implements:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Linear beta schedule&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Cumulative alpha-bar computation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Forward noising (reparameterization trick)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Single denoising step (reverse process)&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>
+<p>Copy the stubs below into your editor. Implement without looking at the code above. Run the test cell to verify.</p>
+<h1 id="drill-10-ddpm-noise-schedule">Drill 10: DDPM Noise Schedule<a class="headerlink" href="#drill-10-ddpm-noise-schedule" title="Permanent link">&para;</a></h1>
+<p>Implement the core noise schedule and forward/reverse operations for DDPM.</p>
+<p><strong>init</strong>:
+  - betas: linear schedule from beta_start to beta_end, shape (T,)
+  - alphas: 1 - betas
+  - alpha_bars: cumulative product of alphas (gets smaller over time)</p>
+<p>add_noise(x_0, t):
+  Given clean data x_0 and timestep t, produce noisy x_t:
+    x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * noise
+  Return both x_t and the noise used.</p>
+<p>denoise_step(x_t, t, predicted_noise):
+  Reverse one step from t to t-1 using the DDPM formula:
+    x_{t-1} = (1/sqrt(alpha_t)) * (x_t - (beta_t/sqrt(1-alpha_bar_t)) * pred_noise) + sigma_t * z
+  where sigma_t = sqrt(beta_t) and z is random noise (zero for t=0).</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MyDDPMSchedule</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">beta_start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta_end</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span> <span class="o">=</span> <span class="n">num_timesteps</span>
+        <span class="c1"># TODO: create linear beta schedule from beta_start to beta_end, shape (T,)</span>
+        <span class="c1"># TODO: compute alphas = 1 - betas</span>
+        <span class="c1"># TODO: compute alpha_bars = cumulative product of alphas</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward diffusion: add noise to clean data.</span>
+<span class="sd">        x_0: (B, ...) clean data</span>
+<span class="sd">        t: (B,) integer timesteps</span>
+<span class="sd">        Returns: (x_t, noise) both same shape as x_0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: gather alpha_bar values for each sample&#39;s timestep</span>
+        <span class="c1">#       reshape for broadcasting: (B, 1, 1, ...) matching x_0 dims</span>
+        <span class="c1"># TODO: sample noise ~ N(0, 1) same shape as x_0</span>
+        <span class="c1"># TODO: compute x_t = sqrt(alpha_bar_t) * x_0 + sqrt(1 - alpha_bar_t) * noise</span>
+        <span class="c1"># TODO: return (x_t, noise)</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">denoise_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">predicted_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reverse one step: go from x_t to x_{t-1}.</span>
+<span class="sd">        x_t: (B, ...) noisy data at timestep t</span>
+<span class="sd">        t: integer timestep (same for whole batch)</span>
+<span class="sd">        predicted_noise: (B, ...) model&#39;s noise prediction</span>
+<span class="sd">        Returns: x_{t-1}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: get alpha_t, beta_t, alpha_bar_t for this timestep</span>
+        <span class="c1"># TODO: compute mean: (1/sqrt(alpha_t)) * (x_t - (beta_t/sqrt(1-alpha_bar_t)) * predicted_noise)</span>
+        <span class="c1"># TODO: if t &gt; 0, add sigma_t * z where sigma_t = sqrt(beta_t), z ~ N(0,1)</span>
+        <span class="c1"># TODO: return x_{t-1}</span>
+        <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># TEST</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="n">MyDDPMSchedule</span><span class="p">(</span><span class="n">num_timesteps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Check schedule properties</span>
+<span class="k">assert</span> <span class="n">schedule</span><span class="o">.</span><span class="n">betas</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;betas shape: </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">betas</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;alphas shape: </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alphas</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="sa">f</span><span class="s2">&quot;alpha_bars shape: </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># alpha_bars should be monotonically decreasing</span>
+<span class="n">diffs</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">diffs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s2">&quot;alpha_bars should be monotonically decreasing&quot;</span>
+
+<span class="c1"># alpha_bars should start near 1 and end near 0</span>
+<span class="k">assert</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.99</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;First alpha_bar should be ~1, got </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Last alpha_bar should be small, got </span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Test add_noise</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>  <span class="c1"># batch of tiny &quot;images&quot;</span>
+<span class="n">t_low</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>    <span class="c1"># t=0 (barely noisy)</span>
+<span class="n">t_high</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="mi">99</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>  <span class="c1"># t=99 (very noisy)</span>
+
+<span class="n">x_t_low</span><span class="p">,</span> <span class="n">noise_low</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t_low</span><span class="p">)</span>
+<span class="n">x_t_high</span><span class="p">,</span> <span class="n">noise_high</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">t_high</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">x_t_low</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;add_noise shape mismatch: </span><span class="si">{</span><span class="n">x_t_low</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">assert</span> <span class="n">x_t_high</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;add_noise shape mismatch: </span><span class="si">{</span><span class="n">x_t_high</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># At t=0, x_t should be very close to x_0</span>
+<span class="n">low_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_t_low</span> <span class="o">-</span> <span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">high_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_t_high</span> <span class="o">-</span> <span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">low_diff</span> <span class="o">&lt;</span> <span class="n">high_diff</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Low-t should be closer to x_0: </span><span class="si">{</span><span class="n">low_diff</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">high_diff</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Test denoise_step</span>
+<span class="n">x_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">pred_noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">x_prev</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">denoise_step</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">pred_noise</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">x_prev</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x_t</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;denoise_step shape mismatch: </span><span class="si">{</span><span class="n">x_prev</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha_bars: first=</span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, last=</span><span class="si">{</span><span class="n">schedule</span><span class="o">.</span><span class="n">alpha_bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Low-t noise diff: </span><span class="si">{</span><span class="n">low_diff</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, High-t noise diff: </span><span class="si">{</span><span class="n">high_diff</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;diffusion schedule: ALL TESTS PASSED&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
