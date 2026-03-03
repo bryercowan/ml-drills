@@ -616,10 +616,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-this-matters-a-real-discovery" class="md-nav__link">
+  <a href="#why-this-matters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why This Matters — A Real Discovery
+        Why This Matters
       
     </span>
   </a>
@@ -682,10 +682,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#building-block-5-your-evocua-numbers" class="md-nav__link">
+  <a href="#building-block-5-real-world-parameter-counts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building Block 5: Your EvoCUA Numbers
+        Building Block 5: Real-World Parameter Counts
       
     </span>
   </a>
@@ -1063,14 +1063,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1098,7 +1098,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1119,14 +1119,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1175,14 +1175,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1203,14 +1203,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1249,19 +1249,18 @@
 
 
 <h1 id="drill-05-lora-low-rank-adaptation-from-scratch">Drill 05 — LoRA: Low-Rank Adaptation from Scratch<a class="headerlink" href="#drill-05-lora-low-rank-adaptation-from-scratch" title="Permanent link">&para;</a></h1>
-<h2 id="why-this-matters-a-real-discovery">Why This Matters — A Real Discovery<a class="headerlink" href="#why-this-matters-a-real-discovery" title="Permanent link">&para;</a></h2>
-<p>You LoRA-tuned <strong>EvoCUA-8B</strong> (Meituan's GUI agent) with <code>r=64</code>, <code>alpha=128</code>,
-targeting the attention projections: <strong>q_proj, k_proj, v_proj, o_proj</strong>.</p>
-<p>The key discovery: when you also included the MLP layers (<code>gate_proj</code>, <code>up_proj</code>,
-<code>down_proj</code>), <strong>spatial grounding collapsed</strong>. The model forgot WHERE to click
-on the screen. Why? Because Meituan had carefully trained those MLP weights on
-82K GUI interaction trajectories — they encode spatial-geometric reasoning about
-UI layouts. Overwriting them destroyed that knowledge.</p>
-<p><strong>Attention-only LoRA</strong> preserved the spatial "where to click" knowledge in the
-MLPs while adapting "what to attend to" in the attention heads. This is the
-surgical precision that makes LoRA powerful: you choose WHICH weight matrices
-to adapt and leave the rest frozen.</p>
-<p>This notebook builds LoRA from scratch so you understand every piece.</p>
+<h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
+<p>LoRA (Low-Rank Adaptation) is the dominant method for fine-tuning large models.
+Instead of updating billions of parameters, you inject small trainable adapters
+into specific weight matrices — typically the attention projections <code>q_proj</code>, <code>k_proj</code>,
+<code>v_proj</code>, and <code>o_proj</code>.</p>
+<p>A key practical insight: <strong>which layers you apply LoRA to matters as much as the rank</strong>.
+Research has shown that attention-only LoRA often outperforms attention+MLP LoRA,
+because the MLP layers store factual/spatial knowledge learned during pretraining.
+Overwriting them with a small fine-tuning dataset can destroy that knowledge.</p>
+<p>This is the surgical precision that makes LoRA powerful: you choose WHICH weight matrices
+to adapt and leave the rest frozen. This notebook builds LoRA from scratch so you
+understand every piece.</p>
 <h2 id="the-core-intuition">The Core Intuition<a class="headerlink" href="#the-core-intuition" title="Permanent link">&para;</a></h2>
 <p><strong>Full fine-tuning</strong> updates every element of a weight matrix $W \in \mathbb{R}^{out \times in}$.
 That's $out \times in$ parameters per layer.</p>
@@ -1466,7 +1465,7 @@ With $r=64$ and $d=4096$, that's <strong>64x compression</strong> of the update 
 from learning dynamics</strong>. When you increase r, the raw output magnitude of B@A
 tends to grow. Dividing by r compensates, so you can change r without retuning
 the learning rate. α is the "effective strength" of the adapter.</p>
-<p><strong>Your setting</strong>: <code>r=64, alpha=128</code> → scaling = <code>128/64 = 2.0</code></p>
+<p><strong>Common setting</strong>: <code>r=64, alpha=128</code> → scaling = <code>128/64 = 2.0</code></p>
 <p>This means the LoRA update is amplified 2x relative to the raw B@A product.
 A scaling &gt; 1 means you're telling the optimizer "the adapter path matters —
 let it have a strong effect.":</p>
@@ -1507,7 +1506,7 @@ let it have a strong effect.":</p>
     <span class="p">(</span><span class="s2">&quot;r=8,  α=8&quot;</span><span class="p">,</span>   <span class="mi">8</span> <span class="o">/</span> <span class="mi">8</span><span class="p">),</span>    <span class="c1"># scaling = 1.0</span>
     <span class="p">(</span><span class="s2">&quot;r=8,  α=16&quot;</span><span class="p">,</span>  <span class="mi">16</span> <span class="o">/</span> <span class="mi">8</span><span class="p">),</span>   <span class="c1"># scaling = 2.0</span>
     <span class="p">(</span><span class="s2">&quot;r=64, α=64&quot;</span><span class="p">,</span>  <span class="mi">64</span> <span class="o">/</span> <span class="mi">64</span><span class="p">),</span>  <span class="c1"># scaling = 1.0 (but higher rank)</span>
-    <span class="p">(</span><span class="s2">&quot;r=64, α=128&quot;</span><span class="p">,</span> <span class="mi">128</span> <span class="o">/</span> <span class="mi">64</span><span class="p">),</span> <span class="c1"># scaling = 2.0 ← your EvoCUA config</span>
+    <span class="p">(</span><span class="s2">&quot;r=64, α=128&quot;</span><span class="p">,</span> <span class="mi">128</span> <span class="o">/</span> <span class="mi">64</span><span class="p">),</span> <span class="c1"># scaling = 2.0 ← common fine-tuning config</span>
 <span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Config           | Scaling | Output Norm&quot;</span><span class="p">)</span>
@@ -1520,11 +1519,11 @@ let it have a strong effect.":</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  This amplifies the adapter signal, giving it more influence&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  over the frozen base weights.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="building-block-5-your-evocua-numbers">Building Block 5: Your EvoCUA Numbers<a class="headerlink" href="#building-block-5-your-evocua-numbers" title="Permanent link">&para;</a></h2>
-<p>Let's compute the actual parameter counts for EvoCUA-8B (Qwen2-VL architecture)
-to see why attention-only vs attention+MLP is such a different story.</p>
-<p>EvoCUA-8B has 32 transformer layers. Each layer has:
-- <strong>Attention</strong>: q_proj, k_proj, v_proj, o_proj — each is (4096, 4096) for a 8B-class model
+<h2 id="building-block-5-real-world-parameter-counts">Building Block 5: Real-World Parameter Counts<a class="headerlink" href="#building-block-5-real-world-parameter-counts" title="Permanent link">&para;</a></h2>
+<p>Let's compute actual parameter counts for a LLaMA-7B-style architecture
+to see why attention-only vs attention+MLP LoRA is such a different story.</p>
+<p>A typical 7B model has 32 transformer layers. Each layer has:
+- <strong>Attention</strong>: q_proj, k_proj, v_proj, o_proj — each is (4096, 4096)
 - <strong>MLP</strong>: gate_proj (11008, 4096), up_proj (11008, 4096), down_proj (4096, 11008)</p>
 <p>With r=64, each LoRA adapter adds <code>r × (in + out)</code> parameters.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -1567,21 +1566,17 @@ to see why attention-only vs attention+MLP is such a different story.</p>
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># BB5: Real parameter counts from your EvoCUA-8B work</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># BB5: Real parameter counts for a 7B-class model</span>
 <span class="n">r</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">n_layers</span> <span class="o">=</span> <span class="mi">32</span>
 
 <span class="c1"># --- Attention projections (q, k, v, o) ---</span>
-<span class="c1"># Simplified: each is roughly 4096 x 4096 for 8B models</span>
-<span class="c1"># (actual Qwen2-VL may have GQA, but this captures the scale)</span>
 <span class="n">attn_d_in</span><span class="p">,</span> <span class="n">attn_d_out</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">,</span> <span class="mi">4096</span>
 <span class="n">lora_per_attn_proj</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">attn_d_in</span> <span class="o">+</span> <span class="n">attn_d_out</span><span class="p">)</span>
 <span class="n">n_attn_projs</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># q, k, v, o</span>
 <span class="n">attn_lora_total</span> <span class="o">=</span> <span class="n">lora_per_attn_proj</span> <span class="o">*</span> <span class="n">n_attn_projs</span> <span class="o">*</span> <span class="n">n_layers</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Attention-Only LoRA (your working config) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Attention-Only LoRA ===&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Per projection: r × (in + out) = </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2"> × (</span><span class="si">{</span><span class="n">attn_d_in</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">attn_d_out</span><span class="si">}</span><span class="s2">) = </span><span class="si">{</span><span class="n">lora_per_attn_proj</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;4 projections × </span><span class="si">{</span><span class="n">n_layers</span><span class="si">}</span><span class="s2"> layers = </span><span class="si">{</span><span class="n">n_attn_projs</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_layers</span><span class="si">}</span><span class="s2"> adapters&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">attn_lora_total</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">attn_lora_total</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">M trainable params&quot;</span><span class="p">)</span>
@@ -1593,7 +1588,7 @@ to see why attention-only vs attention+MLP is such a different story.</p>
     <span class="p">(</span><span class="s2">&quot;down_proj&quot;</span><span class="p">,</span> <span class="mi">11008</span><span class="p">,</span> <span class="mi">4096</span><span class="p">),</span>
 <span class="p">]</span>
 <span class="n">mlp_lora_total</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== MLP LoRA (what broke spatial grounding) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== MLP LoRA ===&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">d_in</span><span class="p">,</span> <span class="n">d_out</span> <span class="ow">in</span> <span class="n">mlp_configs</span><span class="p">:</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">d_in</span> <span class="o">+</span> <span class="n">d_out</span><span class="p">)</span>
     <span class="n">mlp_lora_total</span> <span class="o">+=</span> <span class="n">params</span> <span class="o">*</span> <span class="n">n_layers</span>
@@ -1605,13 +1600,13 @@ to see why attention-only vs attention+MLP is such a different story.</p>
 <span class="c1"># --- Combined ---</span>
 <span class="n">combined</span> <span class="o">=</span> <span class="n">attn_lora_total</span> <span class="o">+</span> <span class="n">mlp_lora_total</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Comparison ===&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attention-only:    </span><span class="si">{</span><span class="n">attn_lora_total</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">M params  ✓ preserved spatial grounding&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attention-only:    </span><span class="si">{</span><span class="n">attn_lora_total</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">M params&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MLP-only:          </span><span class="si">{</span><span class="n">mlp_lora_total</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">M params&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attention + MLP:   </span><span class="si">{</span><span class="n">combined</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">M params  ✗ destroyed spatial grounding&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attention + MLP:   </span><span class="si">{</span><span class="n">combined</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">&gt;6.1f</span><span class="si">}</span><span class="s2">M params&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Attention+MLP is </span><span class="si">{</span><span class="n">combined</span><span class="o">/</span><span class="n">attn_lora_total</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x more params than attention-only&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Lesson: More trainable params ≠ better. The MLP weights encoded&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;spatial reasoning from 82K GUI trajectories. LoRA on those layers&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;overwrote that knowledge, breaking WHERE the model clicks.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Lesson: More trainable params ≠ better. MLP weights often encode&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;factual and spatial knowledge from pretraining. LoRA on those layers&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;can overwrite that knowledge when fine-tuning on a small dataset.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="complete-implementation-loralinear">Complete Implementation: LoRALinear<a class="headerlink" href="#complete-implementation-loralinear" title="Permanent link">&para;</a></h2>
 <p>Now let's put it all together into a proper <code>nn.Module</code>.

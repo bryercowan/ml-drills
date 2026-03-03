@@ -1052,14 +1052,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1087,7 +1087,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1108,14 +1108,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1164,14 +1164,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1192,14 +1192,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1240,7 +1240,7 @@
 <h1 id="drill-08-layernorm-from-scratch">Drill 08 — LayerNorm from Scratch<a class="headerlink" href="#drill-08-layernorm-from-scratch" title="Permanent link">&para;</a></h1>
 <h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
 <p>LayerNorm appears <strong>twice</strong> in every transformer block — once before self-attention,
-once before the feed-forward network. Your Qwen3-VL backbone applies it dozens of times
+once before the feed-forward network. A model like LLaMA-7B with 32 layers applies it 64+ times
 per forward pass.</p>
 <p>Unlike BatchNorm, LayerNorm normalizes across the <strong>feature dimension</strong> of each individual
 token, so it works identically at any batch size and any sequence length. That's why

@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../questions/">
+        <link rel="prev" href="../deep-dives/">
       
       
-        <link rel="next" href="../study-plan/">
+        <link rel="next" href="../resources/">
       
       
         
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-math-they-might-ask" class="md-skip">
+        <a href="#the-math-that-matters" class="md-skip">
           Skip to content
         </a>
       
@@ -895,14 +895,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../pitch/" class="md-nav__link">
+      <a href="../foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -930,7 +930,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -951,14 +951,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../questions/" class="md-nav__link">
+      <a href="../deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -988,6 +988,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1005,6 +1023,247 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#linear-algebra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linear Algebra
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linear Algebra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-multiplication-as-linear-transform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix Multiplication as Linear Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#projections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#svd-and-eigenvalues-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SVD and Eigenvalues (Intuition)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calculus
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Calculus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-chain-rule-backpropagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Chain Rule = Backpropagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gradients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gradients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vanishing-and-exploding-gradients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vanishing and Exploding Gradients
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Probability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Probability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#distributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Distributions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bayes-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bayes' Theorem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kl-divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KL Divergence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mle-minimizing-cross-entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLE = Minimizing Cross-Entropy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information-theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information Theory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Information Theory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entropy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Entropy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutual-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutual Information
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1017,14 +1276,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../study-plan/" class="md-nav__link">
+      <a href="../resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1045,14 +1304,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../positioning/" class="md-nav__link">
+      <a href="../papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1090,35 +1349,67 @@
 
 
 
-<h1 id="the-math-they-might-ask">The Math They Might Ask<a class="headerlink" href="#the-math-they-might-ask" title="Permanent link">&para;</a></h1>
-<p>You don't need to derive anything. You need intuition for why things work.</p>
-<p>SOFTMAX: exp(x_i) / sum(exp(x_j)). Maps any vector to a probability
-distribution. Numerical trick: subtract max(x) first to prevent overflow.
-Gradient: softmax * (1 - softmax) for the correct class — saturates
-when confident, which can slow learning.</p>
-<p>MATRIX MULTIPLICATION AS LINEAR TRANSFORMATION: Wx takes input x and
-maps it to a new space. The columns of W define the basis of the output
-space. Rank(W) = dimensionality of that output space. LoRA says: the
-UPDATE to W is low-rank, meaning the adaptation lives in a small subspace.</p>
-<p>EIGENVALUES: For square matrix A, Ax = lambda*x means x is stretched by
-factor lambda in direction x. The eigenvalue spectrum tells you about
-conditioning — if max(|lambda|)/min(|lambda|) is large, optimization is
-hard (the loss landscape is an elongated valley, gradient descent
-oscillates).</p>
-<p>SVD: Any matrix W = U * Sigma * V^T where Sigma is diagonal with singular
-values. Keep only the top-r singular values → best rank-r approximation.
-THIS IS LORA: the weight update delta_W ≈ B * A is a rank-r matrix.</p>
-<p>LOG PROBABILITIES: We use log P instead of P because: (1) products become
-sums (numerically stable), (2) maximizing log P = maximizing P (log is
-monotonic), (3) cross-entropy is naturally in log space. Your SFT loss IS
-negative log probability of the correct action.</p>
-<p>BAYES' THEOREM: P(A|B) = P(B|A)*P(A)/P(B). Your model computes P(action|screenshot).
-The pretrained weights encode P(action) — the prior. Fine-tuning adjusts
-the likelihood P(screenshot|action) fit to your specific task.</p>
-<p>INFORMATION THEORY INTUITION: Entropy H(P) = expected surprise = -sum P*log(P).
-Cross-entropy H(P,Q) &gt;= H(P). KL divergence = H(P,Q) - H(P) = the extra
-surprise from using Q when the true distribution is P. Your SFT loss IS
-cross-entropy. Your GRPO KL penalty IS KL divergence.</p>
+<h1 id="the-math-that-matters">The Math That Matters<a class="headerlink" href="#the-math-that-matters" title="Permanent link">&para;</a></h1>
+<p>The mathematical foundations of ML, tied to concrete applications. For each area: what it is, why it matters, and one concrete example.</p>
+<hr />
+<h2 id="linear-algebra">Linear Algebra<a class="headerlink" href="#linear-algebra" title="Permanent link">&para;</a></h2>
+<h3 id="matrix-multiplication-as-linear-transform">Matrix Multiplication as Linear Transform<a class="headerlink" href="#matrix-multiplication-as-linear-transform" title="Permanent link">&para;</a></h3>
+<p>A matrix <code>W ∈ R^{m×n}</code> is a function that maps vectors from R^n to R^m. Every linear layer in a neural network is a matmul: <code>y = Wx + b</code>. The matrix encodes what the layer "pays attention to" — each row of W defines a feature detector.</p>
+<p><strong>Why it matters:</strong> Understanding matmul shapes is essential for debugging. If your model maps 768-dim → 512-dim, the weight matrix is 512×768. Every dimension mismatch error traces back to a shape mismatch in a linear transform.</p>
+<h3 id="rank">Rank<a class="headerlink" href="#rank" title="Permanent link">&para;</a></h3>
+<p>The rank of a matrix is the dimension of its column space — how many linearly independent directions it spans. A 1000×1000 matrix with rank 4 only has 4 "real" dimensions of information; the rest is redundant.</p>
+<p><strong>Why it matters:</strong> LoRA works because fine-tuning weight updates have low rank. SVD is how we discover and exploit this structure. The "intrinsic dimensionality" of a problem tells you how many parameters you actually need.</p>
+<h3 id="projections">Projections<a class="headerlink" href="#projections" title="Permanent link">&para;</a></h3>
+<p>A projection maps vectors onto a subspace. Q, K, V projections in attention transform the input into different representations: Q = what am I looking for, K = what do I offer, V = what information do I carry. These are just learned linear projections.</p>
+<p><strong>Why it matters:</strong> Attention is fundamentally about projecting into spaces where meaningful similarity can be measured via dot products.</p>
+<h3 id="svd-and-eigenvalues-intuition">SVD and Eigenvalues (Intuition)<a class="headerlink" href="#svd-and-eigenvalues-intuition" title="Permanent link">&para;</a></h3>
+<p>SVD decomposes any matrix into <code>W = UΣV^T</code> — a rotation, a scaling along principal axes, and another rotation. The singular values (diagonal of Σ) tell you how much information each axis carries. Truncating small singular values gives you low-rank approximation.</p>
+<p><strong>Why it matters:</strong> SVD explains why LoRA works (weight updates concentrate on a few singular directions), why PCA works (keep the largest singular values), and underpins matrix factorization methods throughout ML.</p>
+<p><strong>Concrete example:</strong> A 4096×4096 weight matrix has ~16M parameters. If after fine-tuning, the weight change has effective rank 8, SVD shows it can be captured by two matrices totaling ~65K parameters. That's the LoRA insight.</p>
+<hr />
+<h2 id="calculus">Calculus<a class="headerlink" href="#calculus" title="Permanent link">&para;</a></h2>
+<h3 id="the-chain-rule-backpropagation">The Chain Rule = Backpropagation<a class="headerlink" href="#the-chain-rule-backpropagation" title="Permanent link">&para;</a></h3>
+<p>If <code>f(x) = h(g(x))</code>, then <code>df/dx = dh/dg × dg/dx</code>. Backprop applies this recursively through the computation graph. Every node computes its local derivative and multiplies it by the incoming gradient from above.</p>
+<p><strong>Why it matters:</strong> This is literally how every neural network learns. The forward pass computes the function; the backward pass computes the chain rule. Understanding this is understanding training.</p>
+<h3 id="gradients">Gradients<a class="headerlink" href="#gradients" title="Permanent link">&para;</a></h3>
+<p>The gradient <code>∇L(θ)</code> points in the direction of steepest increase of the loss. We step in the opposite direction to decrease the loss. The magnitude tells us how sensitive the loss is to each parameter.</p>
+<p><strong>Why it matters:</strong> Gradient-based optimization is the backbone of ML. When gradients are zero (saddle points, plateaus), learning stalls. When they're too large, training diverges.</p>
+<h3 id="vanishing-and-exploding-gradients">Vanishing and Exploding Gradients<a class="headerlink" href="#vanishing-and-exploding-gradients" title="Permanent link">&para;</a></h3>
+<p>Through the chain rule, gradients are products of many local derivatives. If each local derivative is &lt;1, the product shrinks exponentially (vanishing). If &gt;1, it grows exponentially (exploding).</p>
+<p><strong>Why it matters:</strong> Vanishing gradients killed deep networks before residual connections. The residual path <code>x + f(x)</code> has gradient <code>1 + df/dx</code>, ensuring the gradient is at least 1 — this is why ResNets and Transformers can be very deep. Gradient clipping handles explosion; residual connections handle vanishing.</p>
+<p><strong>Concrete example:</strong> A 100-layer network where each layer's gradient contribution is 0.9× gets a gradient at layer 1 that's 0.9^100 ≈ 0.00003× the gradient at layer 100. The early layers barely learn. Add residual connections and the gradient flows directly.</p>
+<hr />
+<h2 id="probability">Probability<a class="headerlink" href="#probability" title="Permanent link">&para;</a></h2>
+<h3 id="distributions">Distributions<a class="headerlink" href="#distributions" title="Permanent link">&para;</a></h3>
+<p>The key distributions in ML:</p>
+<ul>
+<li><strong>Gaussian (Normal):</strong> The default assumption. Central limit theorem says averages converge to it. Used in: diffusion (noise is Gaussian), VAEs (latent space), weight initialization.</li>
+<li><strong>Categorical:</strong> Discrete distribution over classes. The output of classification models after softmax.</li>
+<li><strong>Bernoulli:</strong> Binary (yes/no). Used in: dropout (each neuron independently), binary classification.</li>
+</ul>
+<p><strong>Why it matters:</strong> Every probabilistic model makes distributional assumptions. Understanding what distribution your model outputs helps you choose the right loss and interpret predictions.</p>
+<h3 id="bayes-theorem">Bayes' Theorem<a class="headerlink" href="#bayes-theorem" title="Permanent link">&para;</a></h3>
+<p><code>P(A|B) = P(B|A) × P(A) / P(B)</code>. Update your beliefs (prior → posterior) when you see evidence.</p>
+<p><strong>Why it matters:</strong> Bayesian thinking underpins regularization (priors over weights = weight decay), uncertainty estimation, and the entire framework of probabilistic ML. MAP estimation = MLE + a prior = training with regularization.</p>
+<h3 id="kl-divergence">KL Divergence<a class="headerlink" href="#kl-divergence" title="Permanent link">&para;</a></h3>
+<p><code>KL(P || Q) = Σ P(x) log(P(x) / Q(x))</code>. Measures the "extra bits" needed when you use distribution Q to encode data from distribution P. Always ≥ 0. Not symmetric.</p>
+<p><strong>Why it matters:</strong> KL divergence appears everywhere: VAE loss (keep latent close to prior), RLHF (keep fine-tuned model close to base), distillation (match teacher's distribution), and cross-entropy loss is KL divergence + a constant.</p>
+<h3 id="mle-minimizing-cross-entropy">MLE = Minimizing Cross-Entropy<a class="headerlink" href="#mle-minimizing-cross-entropy" title="Permanent link">&para;</a></h3>
+<p>Maximum likelihood estimation (MLE) maximizes <code>log P(data | θ)</code>. For classification with one-hot labels, maximizing log-likelihood is identical to minimizing cross-entropy loss. This isn't a coincidence — cross-entropy is the negative log-likelihood under a categorical distribution.</p>
+<p><strong>Why it matters:</strong> It connects the statistics view (MLE) with the information theory view (cross-entropy) with the optimization view (loss function). They're three languages for the same thing.</p>
+<p><strong>Concrete example:</strong> Binary classification with sigmoid output. MLE says maximize <code>Σ[y log(p) + (1-y) log(1-p)]</code>. That's exactly negative binary cross-entropy.</p>
+<hr />
+<h2 id="information-theory">Information Theory<a class="headerlink" href="#information-theory" title="Permanent link">&para;</a></h2>
+<h3 id="entropy">Entropy<a class="headerlink" href="#entropy" title="Permanent link">&para;</a></h3>
+<p><code>H(X) = -Σ P(x) log P(x)</code>. The average number of bits needed to encode a sample from distribution X. Maximum when all outcomes are equally likely (most uncertain). Zero when one outcome is certain.</p>
+<p><strong>Why it matters:</strong> Entropy measures uncertainty. A model's output entropy tells you how confident it is. High entropy = spread across classes = uncertain. Low entropy = peaked on one class = confident.</p>
+<h3 id="cross-entropy">Cross-Entropy<a class="headerlink" href="#cross-entropy" title="Permanent link">&para;</a></h3>
+<p><code>H(P, Q) = -Σ P(x) log Q(x)</code>. The average bits needed to encode samples from P using the code optimized for Q. Always ≥ H(P). Equals H(P) only when Q = P.</p>
+<p><strong>Why it matters:</strong> Cross-entropy loss directly measures how many "extra bits" your model wastes by not perfectly matching the true distribution. Lower cross-entropy = better model = predictions closer to reality.</p>
+<h3 id="mutual-information">Mutual Information<a class="headerlink" href="#mutual-information" title="Permanent link">&para;</a></h3>
+<p><code>I(X; Y) = H(X) - H(X|Y) = KL(P(X,Y) || P(X)P(Y))</code>. How much knowing Y reduces your uncertainty about X. Zero when X and Y are independent.</p>
+<p><strong>Why it matters:</strong> Mutual information captures the total (not just linear) dependence between variables. Used in representation learning (learn representations that maximize MI with useful features), InfoNCE loss (CLIP's contrastive objective approximates MI maximization), and feature selection.</p>
+<p><strong>Concrete example:</strong> CLIP maximizes mutual information between image and text representations. By training with contrastive loss on matched/unmatched pairs, it learns embeddings where semantically related images and text are close — directly maximizing an MI lower bound.</p>
 
 
 

@@ -911,10 +911,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#your-turn" class="md-nav__link">
+  <a href="#exercises" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Your Turn
+        Exercises
       
     </span>
   </a>
@@ -1130,14 +1130,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1165,7 +1165,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1186,14 +1186,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1242,14 +1242,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1270,14 +1270,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1317,20 +1317,19 @@
 
 <h1 id="drill-10-ddpm-diffusion-forward-noising-denoising">Drill 10 — DDPM Diffusion: Forward Noising &amp; Denoising<a class="headerlink" href="#drill-10-ddpm-diffusion-forward-noising-denoising" title="Permanent link">&para;</a></h1>
 <h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
-<p>Your CNN policy <strong>is</strong> a diffusion policy (Chi et al., 2023 — <em>Diffusion Policy</em>).
-It doesn't denoise images — it denoises <strong>action vectors</strong>.</p>
-<p>Here's what happens every time your policy runs:</p>
+<p>Diffusion models are behind Stable Diffusion, DALL-E 3, Sora, and are increasingly used
+in robotics (Chi et al., 2023 — <em>Diffusion Policy</em>). The same math works whether you're
+denoising images, audio, or action vectors.</p>
+<p>The core loop is simple:</p>
 <ol>
-<li>Start with pure noise: a random 10-dim vector (8 action-type logits + 2 coordinates)</li>
-<li>The CNN looks at the current observation + that noisy vector</li>
-<li>It predicts the noise component</li>
-<li>Subtract (a scaled version of) that noise → slightly cleaner action vector</li>
-<li>Repeat for a few steps → clean action prediction</li>
+<li>Start with pure noise</li>
+<li>A neural network predicts what noise was added</li>
+<li>Subtract (a scaled version of) that noise → slightly cleaner sample</li>
+<li>Repeat for several steps → clean output</li>
 </ol>
-<p><strong>Training</strong>: 100 timesteps, linear beta schedule
-<strong>Inference</strong>: 10 DDIM steps (skipping timesteps for speed)</p>
-<p>This notebook builds every piece from scratch so you understand exactly what
-<code>add_noise()</code> and <code>denoise_step()</code> do inside your policy.</p>
+<p><strong>Training</strong> uses many timesteps (e.g., 100-1000) with a linear or cosine beta schedule.
+<strong>Inference</strong> can use fewer steps via DDIM (e.g., 10-50 steps).</p>
+<p>This notebook builds every piece of the DDPM framework from scratch.</p>
 <h2 id="the-core-idea">The Core Idea<a class="headerlink" href="#the-core-idea" title="Permanent link">&para;</a></h2>
 <h3 id="forward-process-adding-noise">Forward process (adding noise)<a class="headerlink" href="#forward-process-adding-noise" title="Permanent link">&para;</a></h3>
 <p>Given a clean sample $x_0$, we can create a noisy version at ANY timestep $t$:</p>
@@ -1365,15 +1364,15 @@ Then we reverse one step:</p>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">T</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># number of diffusion timesteps (same as your policy)</span>
-<span class="n">dim</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># action vector dimension (8 action types + 2 coords)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># number of diffusion timesteps</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># dimension of our data vector</span>
 
-<span class="c1"># A fake &quot;clean&quot; action vector — our x_0</span>
-<span class="c1"># Think of this as: [action_type_logits..., x_coord, y_coord]</span>
+<span class="c1"># A fake &quot;clean&quot; data vector — our x_0</span>
+<span class="c1"># This could represent anything: a flattened image patch, an action vector, etc.</span>
 <span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 (clean action): </span><span class="si">{</span><span class="n">x_0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  action type logits: </span><span class="si">{</span><span class="n">x_0</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  coordinates:        </span><span class="si">{</span><span class="n">x_0</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_0 (clean data): </span><span class="si">{</span><span class="n">x_0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  first 8 dims: </span><span class="si">{</span><span class="n">x_0</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  last 2 dims:  </span><span class="si">{</span><span class="n">x_0</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="building-block-1-beta-schedule">Building Block 1: Beta Schedule<a class="headerlink" href="#building-block-1-beta-schedule" title="Permanent link">&para;</a></h2>
 <p>$\beta_t$ controls how much noise is added at each step.
@@ -1593,7 +1592,7 @@ No need to noise step by step — that's the beauty of the math.</p>
 <span class="nb">print</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A random prediction gives loss ≈ 2.0 (two unit gaussians).&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A perfect prediction gives loss = 0.0.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your CNN policy has been trained to get this close to 0.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A trained diffusion model learns to get this close to 0.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="building-block-5-one-denoising-step-the-reverse-process">Building Block 5: One Denoising Step (The Reverse Process)<a class="headerlink" href="#building-block-5-one-denoising-step-the-reverse-process" title="Permanent link">&para;</a></h2>
 <p>Given $x_t$ and a noise prediction $\epsilon_\theta$, compute $x_{t-1}$:</p>
@@ -1673,8 +1672,8 @@ No need to noise step by step — that's the beauty of the math.</p>
 <p>$$x_{99} \to x_{89} \to x_{79} \to \ldots \to x_9 \to x_0 \quad \text{(10 steps!)}$$</p>
 <p>The formula is slightly different (no added noise, uses a different interpolation), but
 the idea is the same: predict noise, subtract it, jump to a much earlier timestep.</p>
-<p><strong>Your policy uses DDIM with 10 inference steps</strong> — that's why inference is fast enough
-for real-time robot control. Training still uses all 100 timesteps for the loss.</p>
+<p><strong>Diffusion policies typically use DDIM with 10-50 inference steps</strong> — that's why inference
+is fast enough for real-time applications. Training still uses all timesteps for the loss.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1706,15 +1705,15 @@ for real-time robot control. Training still uses all 100 timesteps for the loss.
     <span class="n">x_next</span> <span class="o">=</span> <span class="n">abar_next</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0_pred</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">abar_next</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">epsilon_pred</span>
     <span class="k">return</span> <span class="n">x_next</span>
 
-<span class="c1"># Demo: 10-step DDIM schedule (same as your policy)</span>
+<span class="c1"># Demo: 10-step DDIM schedule (common in practice)</span>
 <span class="n">ddim_timesteps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">))</span>  <span class="c1"># [99, 89, 79, ..., 9]</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DDIM timesteps (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ddim_timesteps</span><span class="p">)</span><span class="si">}</span><span class="s2"> steps): </span><span class="si">{</span><span class="n">ddim_timesteps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vs DDPM: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="si">}</span><span class="s2"> (100 steps)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Same network, 10x fewer calls. That&#39;s why your policy is fast.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Same network, 10x fewer calls. That&#39;s why a diffusion policy is fast.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="putting-it-all-together-ddpmschedule-class">Putting It All Together: DDPMSchedule Class<a class="headerlink" href="#putting-it-all-together-ddpmschedule-class" title="Permanent link">&para;</a></h2>
-<p>This is essentially what lives inside your diffusion policy.
+<p>This is essentially what lives inside a diffusion policy.
 Two key methods:
 - <code>add_noise(x_0, t, noise)</code> — used during <strong>training</strong> to create noisy samples
 - <code>denoise_step(x_t, t, noise_pred)</code> — used during <strong>inference</strong> to clean up</p>
@@ -1864,7 +1863,7 @@ Two key methods:
 </code></pre></div></td></tr></table></div>
 <h3 id="demo-full-round-trip-with-an-oracle-predictor">Demo: Full Round-Trip with an Oracle Predictor<a class="headerlink" href="#demo-full-round-trip-with-an-oracle-predictor" title="Permanent link">&para;</a></h3>
 <p>To verify our math works, we'll use a "cheating" noise predictor that knows the
-true noise. In your real policy, the CNN fills this role.</p>
+true noise. In a real model, a trained neural network fills this role.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1911,15 +1910,15 @@ true noise. In your real policy, the CNN fills this role.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Note: Recovery isn&#39;t perfect because we used the same noise estimate&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;for all timesteps. A trained network adapts its prediction per step.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="your-turn">Your Turn<a class="headerlink" href="#your-turn" title="Permanent link">&para;</a></h2>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
 <p>Exercises:
 1. Create a DDPMSchedule with <code>T=200</code> and a cosine-shaped alpha_bar (google "cosine noise schedule"). Plot it against the linear one.
 2. Write a <code>ddim_denoise()</code> method that takes a list of timesteps (e.g., <code>[99, 89, ..., 9]</code>) and denoises using DDIM steps. Compare speed vs full DDPM.
 3. Batch it: modify <code>add_noise</code> to handle a batch of different timesteps (one per sample). Hint: <code>t</code> becomes a tensor and you need to index <code>alpha_bars[t]</code> with broadcasting.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Your code here</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Code here</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
-<p>Run these to verify your DDPMSchedule implementation is correct.</p>
+<p>Run these to verify the DDPMSchedule implementation is correct.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2018,7 +2017,7 @@ true noise. In your real policy, the CNN fills this role.</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All tests passed! ✓&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your DDPMSchedule correctly implements:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The DDPMSchedule correctly implements:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Linear beta schedule&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Cumulative alpha-bar computation&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Forward noising (reparameterization trick)&quot;</span><span class="p">)</span>
@@ -2026,7 +2025,7 @@ true noise. In your real policy, the CNN fills this role.</p>
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>
-<p>Copy the stubs below into your editor. Implement without looking at the code above. Run the test cell to verify.</p>
+<p>Copy the stubs below into an editor. Implement without looking at the code above. Run the test cell to verify.</p>
 <h1 id="drill-10-ddpm-noise-schedule">Drill 10: DDPM Noise Schedule<a class="headerlink" href="#drill-10-ddpm-noise-schedule" title="Permanent link">&para;</a></h1>
 <p>Implement the core noise schedule and forward/reverse operations for DDPM.</p>
 <p><strong>init</strong>:

@@ -862,10 +862,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#building-block-6-why-your-grpo-failed" class="md-nav__link">
+  <a href="#building-block-6-why-grpo-can-fail" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building Block 6: Why YOUR GRPO Failed
+        Building Block 6: Why GRPO Can Fail
       
     </span>
   </a>
@@ -911,15 +911,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#your-turn" class="md-nav__link">
+  <a href="#try-it" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Your Turn
+        Try It
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Your Turn">
+    <nav class="md-nav" aria-label="Try It">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1108,14 +1108,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1143,7 +1143,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1164,14 +1164,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1220,14 +1220,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1248,14 +1248,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1295,15 +1295,15 @@
 
 <h1 id="drill-11-kl-divergence-grpo-loss">Drill 11 — KL Divergence &amp; GRPO Loss<a class="headerlink" href="#drill-11-kl-divergence-grpo-loss" title="Permanent link">&para;</a></h1>
 <h2 id="why-this-matters-the-hard-way">Why This Matters (The Hard Way)<a class="headerlink" href="#why-this-matters-the-hard-way" title="Permanent link">&para;</a></h2>
-<p>You tried 7 GRPO configurations. Every single one hit a KL divergence wall:
-- KL shot to <strong>14-23 after just 2 gradient updates</strong>
-- Gradient norms hit <strong>~1500</strong> even at lr=1e-7
-- The base policy only completed step 1 about <strong>20% of the time</strong></p>
+<p>Consider a scenario where multiple GRPO configurations all hit a KL divergence wall:
+- KL divergence spiked after just a few gradient updates
+- Gradient norms exploded even at very low learning rates
+- The base policy rarely completed even the first step</p>
 <p>That's not a hyperparameter problem. That's a <strong>signal problem</strong>.</p>
-<p>This notebook will give you the math to explain <em>exactly</em> why it failed — the kind
-of understanding that lets you diagnose RL training failures and
-sound like you actually know what's going on, not just that you tried a bunch of configs.</p>
-<p><strong>By the end you'll be able to:</strong>
+<p>This notebook provides the math to explain <em>exactly</em> why GRPO can fail — the kind
+of understanding needed to diagnose RL training failures and
+communicate what's going on, beyond just listing configs that were tried.</p>
+<p><strong>By the end of this drill:</strong>
 1. Compute KL divergence by hand and explain what the number means
 2. Explain why GRPO normalizes advantages within a group
 3. Show mathematically why low reward variance + KL penalty = catastrophic drift
@@ -1318,7 +1318,7 @@ sound like you actually know what's going on, not just that you tried a bunch of
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="part-1-kl-divergence-the-core-intuition">Part 1: KL Divergence — The Core Intuition<a class="headerlink" href="#part-1-kl-divergence-the-core-intuition" title="Permanent link">&para;</a></h2>
-<p><strong>KL(P || Q)</strong> = the expected number of <strong>extra bits</strong> you need if you use
+<p><strong>KL(P || Q)</strong> = the expected number of <strong>extra bits</strong> needed when using
 distribution Q to encode samples that actually come from distribution P.</p>
 <p>$$KL(P | Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}$$</p>
 <p>Three properties to memorize:
@@ -1326,11 +1326,11 @@ distribution Q to encode samples that actually come from distribution P.</p>
 2. <strong>= 0 if and only if P = Q</strong> (perfect encoding)
 3. <strong>NOT symmetric</strong>: KL(P||Q) ≠ KL(Q||P) in general</p>
 <p><strong>In GRPO context</strong>: KL(π_θ || π_ref) measures how far our training policy has
-drifted from the reference (SFT) policy. When this hits 14-23, the policy has
+drifted from the reference (SFT) policy. When this spikes, the policy has
 moved so far that it's basically a different model speaking a different language.</p>
 <h3 id="building-block-1-computing-kl-divergence">Building Block 1: Computing KL Divergence<a class="headerlink" href="#building-block-1-computing-kl-divergence" title="Permanent link">&para;</a></h3>
 <p>Let's compute KL(P||Q) for two simple distributions over 3 outcomes.</p>
-<p><strong>Key insight</strong>: Each term P(x) * log(P(x)/Q(x)) tells you how much "surprise cost"
+<p><strong>Key insight</strong>: Each term P(x) * log(P(x)/Q(x)) measures how much "surprise cost"
 outcome x contributes. When P puts mass where Q doesn't, KL explodes.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -1373,8 +1373,8 @@ outcome x contributes. When P puts mass where Q doesn't, KL explodes.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;KL(P||Q) = </span><span class="si">{</span><span class="n">per_term</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> nats&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;         = </span><span class="si">{</span><span class="n">per_term</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpretation: you need ~0.02 extra bits per sample if you&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;use Q instead of P for encoding. These distributions are CLOSE.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interpretation: ~0.02 extra bits per sample are needed when&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;using Q instead of P for encoding. These distributions are CLOSE.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h3 id="building-block-2-kl-is-not-symmetric">Building Block 2: KL is NOT Symmetric<a class="headerlink" href="#building-block-2-kl-is-not-symmetric" title="Permanent link">&para;</a></h3>
 <p>This is a classic common gotcha. Let's see it concretely.</p>
@@ -1549,7 +1549,7 @@ get positive advantage; worse ones get negative. The gradient pushes probability
 <p>The loss has <strong>two competing forces</strong>:
 1. <strong>Policy gradient term</strong> (ρ·A): push toward high-advantage responses
 2. <strong>KL penalty</strong> (β·KL): pull back toward the reference policy</p>
-<p>When β is too small → KL explodes (your problem: KL hit 14-23)
+<p>When β is too small → KL explodes (the problem described above: KL divergence spiked)
 When β is too large → no learning at all</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -1671,8 +1671,8 @@ When β is too large → no learning at all</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  loss per sample:  </span><span class="si">{</span><span class="n">loss_per_sample</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  TOTAL LOSS:       </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="building-block-6-why-your-grpo-failed">Building Block 6: Why YOUR GRPO Failed<a class="headerlink" href="#building-block-6-why-your-grpo-failed" title="Permanent link">&para;</a></h3>
-<p>Here's the critical insight. Your base policy completed step 1 only ~20% of the time.
+<h3 id="building-block-6-why-grpo-can-fail">Building Block 6: Why GRPO Can Fail<a class="headerlink" href="#building-block-6-why-grpo-can-fail" title="Permanent link">&para;</a></h3>
+<p>Here's the critical insight. A weak base policy that rarely completes even the first step.
 That means most of the G sampled responses probably all failed in the same way,
 getting similar (low) rewards.</p>
 <p><strong>When all rewards are similar → std(R) ≈ 0 → advantages explode or become meaningless</strong></p>
@@ -1746,7 +1746,7 @@ getting similar (low) rewards.</p>
 <span class="nb">print</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCENARIO 2: Your situation — nearly all failures&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCENARIO 2: Weak base policy — nearly all failures&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
 <span class="n">rewards_bad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">])</span>
 <span class="n">mean_b</span> <span class="o">=</span> <span class="n">rewards_bad</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1778,7 +1778,7 @@ getting similar (low) rewards.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The policy MASSIVELY upweights that one response, regardless&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;of whether it was actually good or just slightly less terrible.&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This creates HUGE gradient norms (you saw ~1500!), which push&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This creates HUGE gradient norms (which can reach ~1500!), pushing&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;the policy far from the reference in one step → KL explodes.&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;In Scenario 3 with pure zeros, advantages = 0, so the ONLY&quot;</span><span class="p">)</span>
@@ -1790,19 +1790,19 @@ getting similar (low) rewards.</p>
 <ol>
 <li><strong>Base policy is weak</strong> → 80% of responses fail → low reward variance</li>
 <li><strong>Low variance</strong> → one slightly-better response gets enormous advantage</li>
-<li><strong>Enormous advantage</strong> → massive gradient (norm ~1500)</li>
+<li><strong>Enormous advantage</strong> → gradient norms explode</li>
 <li><strong>Massive gradient</strong> → policy jumps far from reference in one step</li>
 <li><strong>Far from reference</strong> → KL penalty now dominates the loss</li>
 <li><strong>KL dominates</strong> → gradient points back toward reference, NOT toward good responses</li>
 <li><strong>Oscillation</strong> → policy bounces between "collapse toward ref" and "massive jump away"</li>
-<li><strong>KL reads 14-23</strong> → training is effectively dead</li>
+<li><strong>KL divergence spikes</strong> → training is effectively dead</li>
 </ol>
 <p><strong>The fix</strong>: the base model needed to be stronger BEFORE GRPO. GRPO refines a policy
 that's already decent — it can't teach a model a fundamentally new capability.
 Think of GRPO as fine-tuning the last mile, not the first mile.</p>
 <hr />
 <h2 id="part-2-complete-implementations">Part 2: Complete Implementations<a class="headerlink" href="#part-2-complete-implementations" title="Permanent link">&para;</a></h2>
-<p>Now let's write clean implementations that you could explain line-by-line.</p>
+<p>Now let's write clean implementations that can be explained line-by-line.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
@@ -2042,7 +2042,7 @@ Think of GRPO as fine-tuning the last mile, not the first mile.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Rho:        </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;rho&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
 
-<span class="c1"># Test with YOUR failure scenario</span>
+<span class="c1"># Test with the failure scenario</span>
 <span class="n">result_bad</span> <span class="o">=</span> <span class="n">grpo_loss</span><span class="p">(</span>
     <span class="n">log_pi_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.2</span><span class="p">]),</span>
     <span class="n">log_pi_old</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span>  <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span>  <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">]),</span>
@@ -2052,7 +2052,7 @@ Think of GRPO as fine-tuning the last mile, not the first mile.</p>
     <span class="n">beta</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GRPO Loss (YOUR failure scenario):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GRPO Loss (weak base policy failure scenario):&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Loss:       </span><span class="si">{</span><span class="n">result_bad</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mean KL:    </span><span class="si">{</span><span class="n">result_bad</span><span class="p">[</span><span class="s1">&#39;mean_kl&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Advantages: </span><span class="si">{</span><span class="n">result_bad</span><span class="p">[</span><span class="s1">&#39;advantages&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2095,7 +2095,7 @@ reference doesn't. This is what GRPO uses. KL(π_ref||π_θ) is "mode-covering" 
 penalizes the policy for NOT covering all modes of the reference.</p>
 </blockquote>
 <hr />
-<h2 id="your-turn">Your Turn<a class="headerlink" href="#your-turn" title="Permanent link">&para;</a></h2>
+<h2 id="try-it">Try It<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h2>
 <p>Implement from scratch without looking above.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -2108,18 +2108,18 @@ penalizes the policy for NOT covering all modes of the reference.</p>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">your_kl_divergence</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">my_kl_divergence_np</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute KL(P || Q). Return value in nats.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>  <span class="c1"># YOUR CODE HERE</span>
+    <span class="k">pass</span>  <span class="c1"># TODO: implement</span>
 
 
-<span class="k">def</span> <span class="nf">your_grpo_loss</span><span class="p">(</span><span class="n">log_pi_theta</span><span class="p">,</span> <span class="n">log_pi_old</span><span class="p">,</span> <span class="n">log_pi_ref</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span>
-                   <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">my_grpo_loss_np</span><span class="p">(</span><span class="n">log_pi_theta</span><span class="p">,</span> <span class="n">log_pi_old</span><span class="p">,</span> <span class="n">log_pi_ref</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span>
+                    <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute GRPO loss.</span>
 <span class="sd">    Return dict with at least &#39;loss&#39; and &#39;mean_kl&#39; keys.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>  <span class="c1"># YOUR CODE HERE</span>
+    <span class="k">pass</span>  <span class="c1"># TODO: implement</span>
 </code></pre></div></td></tr></table></div>
 <h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2168,19 +2168,19 @@ penalizes the policy for NOT covering all modes of the reference.</p>
 <span class="n">P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
 <span class="n">Q1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
 
-<span class="n">kl_val</span> <span class="o">=</span> <span class="n">your_kl_divergence</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">kl_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;your_kl_divergence returned None&quot;</span>
+<span class="n">kl_val</span> <span class="o">=</span> <span class="n">my_kl_divergence_np</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">kl_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;my_kl_divergence_np returned None&quot;</span>
 <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">kl_val</span> <span class="o">-</span> <span class="mf">0.02659</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;KL(P1||Q1) should be ~0.02659, got </span><span class="si">{</span><span class="n">kl_val</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="c1"># Verify properties</span>
-<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">your_kl_divergence</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">P1</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="s2">&quot;KL(P,P) should be 0&quot;</span>
-<span class="k">assert</span> <span class="n">your_kl_divergence</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">1e-10</span><span class="p">,</span> <span class="s2">&quot;KL should be non-negative&quot;</span>
-<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">your_kl_divergence</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span> <span class="o">-</span> <span class="n">your_kl_divergence</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">P1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;KL should be asymmetric&quot;</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">my_kl_divergence_np</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">P1</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="s2">&quot;KL(P,P) should be 0&quot;</span>
+<span class="k">assert</span> <span class="n">my_kl_divergence_np</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">1e-10</span><span class="p">,</span> <span class="s2">&quot;KL should be non-negative&quot;</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">my_kl_divergence_np</span><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">Q1</span><span class="p">)</span> <span class="o">-</span> <span class="n">my_kl_divergence_np</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">P1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;KL should be asymmetric&quot;</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;kl_divergence: ALL TESTS PASSED ✓&quot;</span><span class="p">)</span>
 
 <span class="c1"># ---- Test grpo_loss ----</span>
-<span class="n">result_test</span> <span class="o">=</span> <span class="n">your_grpo_loss</span><span class="p">(</span>
+<span class="n">result_test</span> <span class="o">=</span> <span class="n">my_grpo_loss_np</span><span class="p">(</span>
     <span class="n">log_pi_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">]),</span>
     <span class="n">log_pi_old</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.1</span><span class="p">]),</span>
     <span class="n">log_pi_ref</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">2.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3</span><span class="p">]),</span>
@@ -2189,7 +2189,7 @@ penalizes the policy for NOT covering all modes of the reference.</p>
     <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="k">assert</span> <span class="n">result_test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;your_grpo_loss returned None&quot;</span>
+<span class="k">assert</span> <span class="n">result_test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;my_grpo_loss_np returned None&quot;</span>
 <span class="k">assert</span> <span class="s1">&#39;loss&#39;</span> <span class="ow">in</span> <span class="n">result_test</span><span class="p">,</span> <span class="s2">&quot;Result must contain &#39;loss&#39; key&quot;</span>
 <span class="k">assert</span> <span class="s1">&#39;mean_kl&#39;</span> <span class="ow">in</span> <span class="n">result_test</span><span class="p">,</span> <span class="s2">&quot;Result must contain &#39;mean_kl&#39; key&quot;</span>
 <span class="k">assert</span> <span class="n">result_test</span><span class="p">[</span><span class="s1">&#39;mean_kl&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">1e-10</span><span class="p">,</span> <span class="s2">&quot;KL should be non-negative&quot;</span>
@@ -2206,11 +2206,11 @@ penalizes the policy for NOT covering all modes of the reference.</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;grpo_loss: ALL TESTS PASSED ✓&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You can now explain KL divergence and GRPO loss clearly. 🎯&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KL divergence and GRPO loss — understood. 🎯&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>
-<p>Copy the stubs below into your editor. Implement without looking at the code above. Run the test cell to verify.</p>
+<p>Copy the stubs below into an editor. Implement without looking at the code above. Run the test cell to verify.</p>
 <h1 id="drill-11-kl-divergence-grpo-loss_1">Drill 11: KL Divergence &amp; GRPO Loss<a class="headerlink" href="#drill-11-kl-divergence-grpo-loss_1" title="Permanent link">&para;</a></h1>
 <p>Two implementations:
 1. KL divergence between two probability distributions

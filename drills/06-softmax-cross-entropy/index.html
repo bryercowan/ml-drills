@@ -710,10 +710,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#building-block-5-what-your-training-loss-numbers-actually-mean" class="md-nav__link">
+  <a href="#building-block-5-what-training-loss-numbers-actually-mean" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Building Block 5: What Your Training Loss Numbers Actually Mean
+        Building Block 5: What Training Loss Numbers Actually Mean
       
     </span>
   </a>
@@ -1074,14 +1074,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1109,7 +1109,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1130,14 +1130,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1186,14 +1186,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1214,14 +1214,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1263,17 +1263,17 @@
 <h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
 <p>You already built softmax when you implemented attention — it turned raw dot-product
 scores into weights that sum to 1. That same function shows up everywhere.</p>
-<p><strong>Cross-entropy</strong> is the loss function used in SFT (supervised fine-tuning). When you
-trained your model and watched the loss drop from <strong>3.29 → 0.09</strong>, those numbers have
+<p><strong>Cross-entropy</strong> is the loss function used in nearly all classification and language
+modeling tasks. When you see training loss drop from <strong>3.29 → 0.09</strong>, those numbers have
 a precise meaning:</p>
 <ul>
-<li><strong>Loss = 3.29</strong> → the model assigned <strong>exp(-3.29) ≈ 3.7%</strong> probability to the correct action</li>
-<li><strong>Loss = 0.09</strong> → the model assigned <strong>exp(-0.09) ≈ 91.4%</strong> probability to the correct action</li>
+<li><strong>Loss = 3.29</strong> → the model assigned <strong>exp(-3.29) ≈ 3.7%</strong> probability to the correct token</li>
+<li><strong>Loss = 0.09</strong> → the model assigned <strong>exp(-0.09) ≈ 91.4%</strong> probability to the correct token</li>
 </ul>
 <p>By the end of this notebook you'll:
 1. Implement softmax from scratch (with the stability trick you'll be expected to know)
 2. Implement cross-entropy loss from scratch
-3. Understand exactly what your training loss numbers mean</p>
+3. Understand exactly what training loss numbers mean</p>
 <hr />
 <h2 id="intuition">Intuition<a class="headerlink" href="#intuition" title="Permanent link">&para;</a></h2>
 <p><strong>Softmax</strong> converts a vector of raw scores (logits) into a probability distribution:
@@ -1467,9 +1467,9 @@ This is exactly what you want during training.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;↑ Much higher loss when the model is wrong&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />
-<h2 id="building-block-5-what-your-training-loss-numbers-actually-mean">Building Block 5: What Your Training Loss Numbers Actually Mean<a class="headerlink" href="#building-block-5-what-your-training-loss-numbers-actually-mean" title="Permanent link">&para;</a></h2>
+<h2 id="building-block-5-what-training-loss-numbers-actually-mean">Building Block 5: What Training Loss Numbers Actually Mean<a class="headerlink" href="#building-block-5-what-training-loss-numbers-actually-mean" title="Permanent link">&para;</a></h2>
 <p>Remember: <strong>loss = -log(prob_correct)</strong>, so <strong>prob_correct = exp(-loss)</strong>.</p>
-<p>Let's decode the loss values from your SFT training run:</p>
+<p>Let's decode what typical loss values mean during training:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1493,10 +1493,10 @@ This is exactly what you want during training.</p>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Loss&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Prob on correct action&#39;</span><span class="si">:</span><span class="s2">&gt;22</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Meaning&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Loss&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Prob on correct token&#39;</span><span class="si">:</span><span class="s2">&gt;22</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;Meaning&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
 
-<span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.29</span><span class="p">,</span> <span class="mf">2.30</span><span class="p">,</span> <span class="mf">1.61</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">]</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.29</span><span class="p">,</span> <span class="mf">2.30</span><span class="p">,</span> <span class="mf">1.61</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;Start of training&quot;</span><span class="p">,</span>
     <span class="s2">&quot;~10</span><span class="si">% c</span><span class="s2">orrect&quot;</span><span class="p">,</span>
@@ -1504,7 +1504,7 @@ This is exactly what you want during training.</p>
     <span class="s2">&quot;Getting somewhere&quot;</span><span class="p">,</span>
     <span class="s2">&quot;More right than wrong&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Near convergence&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Your final loss!&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Well-converged&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="k">for</span> <span class="n">loss</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
@@ -1513,8 +1513,8 @@ This is exactly what you want during training.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">   →  </span><span class="si">{</span><span class="n">prob</span><span class="si">:</span><span class="s2">6.1%</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">bar</span><span class="si">:</span><span class="s2">30s</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your model went from assigning 3.7% probability to the&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;correct action to assigning 91.4%. That&#39;s what training did.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A model going from loss 3.29 to 0.05 went from assigning&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3.7% to 95.1% probability to the correct token. That&#39;s training.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="complete-implementation-reference-solutions">Complete Implementation: Reference Solutions<a class="headerlink" href="#complete-implementation-reference-solutions" title="Permanent link">&para;</a></h2>

@@ -598,10 +598,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#connecting-to-evocua-8b" class="md-nav__link">
+  <a href="#connecting-to-real-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Connecting to EvoCUA-8B
+        Connecting to Real Models
       
     </span>
   </a>
@@ -1074,14 +1074,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1109,7 +1109,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1130,14 +1130,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1186,14 +1186,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1214,14 +1214,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1263,10 +1263,10 @@
 <h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
 <p>In Drill 1 you built single-head self-attention: one set of Q, K, V projections
 producing one attention pattern over the sequence.</p>
-<p>But your EvoCUA-8B model has <strong>32 attention heads</strong>. When you LoRA-tune the
+<p>Real transformer models like GPT-3 use <strong>96 attention heads</strong>, LLaMA-7B uses <strong>32</strong>. When you LoRA-tune the
 <code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, and <code>o_proj</code> weight matrices, every one of those
-32 heads is affected. Understanding what happens <em>inside</em> multi-head attention
-will help you reason about what your LoRA adapters are actually learning.</p>
+heads is affected. Understanding what happens <em>inside</em> multi-head attention
+is essential to reasoning about how transformers learn different patterns.</p>
 <p><strong>Goal:</strong> Build <code>MultiHeadAttention</code> from scratch, reusing the scaled-dot-product
 attention you already know.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -1427,7 +1427,7 @@ a normal embedding.</p>
 changes stride metadata. <code>view</code> requires contiguous memory, so we call
 <code>contiguous()</code> first (or use <code>reshape</code>, which does it implicitly).</p>
 <p>Finally, we multiply by <strong>W_o</strong> <code>(D, D)</code> — the output projection. This is the
-<code>o_proj</code> that your LoRA adapter also tunes. It lets the model learn how to
+<code>o_proj</code> that LoRA adapters commonly target. It lets the model learn how to
 <strong>mix information across heads</strong>.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -1600,8 +1600,8 @@ Read through and match each section to the blocks above.</p>
 <span class="k">assert</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;Shape mismatch!&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape check passed.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="connecting-to-evocua-8b">Connecting to EvoCUA-8B<a class="headerlink" href="#connecting-to-evocua-8b" title="Permanent link">&para;</a></h2>
-<p>Your model uses <strong>d_model=4096</strong> and <strong>n_heads=32</strong>, giving <strong>d_k=128</strong> per head.</p>
+<h2 id="connecting-to-real-models">Connecting to Real Models<a class="headerlink" href="#connecting-to-real-models" title="Permanent link">&para;</a></h2>
+<p>A model like LLaMA-7B uses <strong>d_model=4096</strong> and <strong>n_heads=32</strong>, giving <strong>d_k=128</strong> per head.</p>
 <p>When you set up LoRA with <code>target_modules=["q_proj", "k_proj", "v_proj", "o_proj"]</code>,
 you're injecting low-rank adapters into exactly the four <code>nn.Linear</code> layers above
 (<code>W_q</code>, <code>W_k</code>, <code>W_v</code>, <code>W_o</code>). Each LoRA adapter is shared across all 32 heads —
@@ -1688,7 +1688,7 @@ It checks that the output shape matches the input shape.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All checks passed!&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="bonus-causal-autoregressive-mask">Bonus: Causal (Autoregressive) Mask<a class="headerlink" href="#bonus-causal-autoregressive-mask" title="Permanent link">&para;</a></h2>
-<p>Decoder-only models like EvoCUA-8B use a <strong>causal mask</strong> so that each token
+<p>Decoder-only models like GPT and LLaMA use a <strong>causal mask</strong> so that each token
 can only attend to itself and earlier tokens. Here's how to create one and
 pass it to the attention module.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -1716,9 +1716,9 @@ pass it to the attention module.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Causal MHA output shape: </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
-<p>In <strong>Drill 3</strong> we'll add positional encoding and layer normalization,
-then stack attention + feed-forward into a full transformer block.
-That's the repeating unit your EvoCUA-8B stacks 32 times.</p>
+<p>In <strong>Drill 3</strong> we'll build a training loop, and later drills
+stack attention + feed-forward into a full transformer block.
+That's the repeating unit that LLMs like GPT and LLaMA stack dozens of times.</p>
 <hr />
 <h2 id="practice-implement-it-yourself">🏋️ Practice — Implement It Yourself<a class="headerlink" href="#practice-implement-it-yourself" title="Permanent link">&para;</a></h2>
 <p>Copy the stubs below into your editor. Implement without looking at the code above. Run the test cell to verify.</p>

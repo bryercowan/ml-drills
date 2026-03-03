@@ -1052,14 +1052,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1087,7 +1087,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1108,14 +1108,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1164,14 +1164,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1192,14 +1192,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1239,13 +1239,13 @@
 
 <h1 id="drill-04-cross-attention">Drill 04 — Cross-Attention<a class="headerlink" href="#drill-04-cross-attention" title="Permanent link">&para;</a></h1>
 <h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
-<p>You already built this. In your CNN policy, <strong>action tokens</strong> (Q) attend to
-<strong>ConvNeXt spatial features</strong> (K, V). That's cross-attention — Q and K/V come
-from different sources.</p>
-<p>Where it shows up:
-- <strong>Your policy</strong>: 3 action tokens query 220 spatial tokens (11×20 ConvNeXt grid)
+<p>Cross-attention is how two different modalities talk to each other. Q and K/V come
+from different sources — that's the key structural difference from self-attention.</p>
+<p>Where it shows up everywhere:
+- <strong>Stable Diffusion</strong>: noised image tokens (Q) attend to CLIP text embeddings (K, V)
 - <strong>Encoder-decoder transformers</strong>: decoder queries attend to encoder output
-- <strong>Stable Diffusion</strong>: noised image tokens query CLIP text embeddings</p>
+- <strong>Robotics policies</strong>: action tokens query spatial vision features
+- <strong>Whisper</strong>: text decoder attends to audio encoder features</p>
 <p>You already know self-attention from Drill 01. Cross-attention is the same math
 with one structural twist.</p>
 <h2 id="the-one-key-difference">The One Key Difference<a class="headerlink" href="#the-one-key-difference" title="Permanent link">&para;</a></h2>
@@ -1253,14 +1253,14 @@ with one structural twist.</p>
 square: <code>(B, T, T)</code>.</p>
 <p>In <strong>cross-attention</strong>, Q comes from one source, K/V from another → score matrix
 is <strong>rectangular</strong>: <code>(B, T_q, T_kv)</code> where <code>T_q ≠ T_kv</code>.</p>
-<p>Your real dimensions:
+<p>Example dimensions (Stable Diffusion-style):
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>queries_input: (B, 3, D)     ← 3 action tokens (what you&#39;re predicting)
-context:       (B, 220, D)   ← 220 spatial positions from ConvNeXt (11×20 grid)
-scores:        (B, 3, 220)   ← each action token scores ALL spatial positions
-output:        (B, 3, D)     ← output matches query length, NOT context length
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>queries_input: (B, 4096, D)  ← 4096 noised image tokens (64×64 latent)
+context:       (B, 77, D)    ← 77 text tokens from CLIP text encoder
+scores:        (B, 4096, 77) ← each image token scores ALL text tokens
+output:        (B, 4096, D)  ← output matches query length, NOT context length
 </code></pre></div></td></tr></table></div></p>
 <p>That's it. Same <code>softmax(QK^T / √d) V</code> — just Q and K/V have different sources.</p>
 <h2 id="building-block-1-two-separate-inputs">Building Block 1: Two Separate Inputs<a class="headerlink" href="#building-block-1-two-separate-inputs" title="Permanent link">&para;</a></h2>
@@ -1287,11 +1287,11 @@ output:        (B, 3, D)     ← output matches query length, NOT context length
 
 <span class="n">B</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">64</span>  <span class="c1"># batch size, model dim</span>
 
-<span class="c1"># Source 1: what&#39;s asking the questions (action tokens)</span>
+<span class="c1"># Source 1: what&#39;s asking the questions (e.g., decoder tokens or action tokens)</span>
 <span class="n">T_q</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">queries_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T_q</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 
-<span class="c1"># Source 2: what&#39;s being attended to (spatial features from ConvNeXt)</span>
+<span class="c1"># Source 2: what&#39;s being attended to (e.g., encoder output or image features)</span>
 <span class="n">T_kv</span> <span class="o">=</span> <span class="mi">220</span>
 <span class="n">context</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T_kv</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 
@@ -1431,8 +1431,8 @@ weighted combination of context values, with weights determined by that query.</
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries_input</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        queries_input: (B, T_q, D)   — e.g. action tokens</span>
-<span class="sd">        context:       (B, T_kv, D)  — e.g. ConvNeXt spatial features</span>
+<span class="sd">        queries_input: (B, T_q, D)   — e.g. decoder tokens or action tokens</span>
+<span class="sd">        context:       (B, T_kv, D)  — e.g. encoder output or image features</span>
 <span class="sd">        returns:       (B, T_q, D)   — output matches query length</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">B</span><span class="p">,</span> <span class="n">T_q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">queries_input</span><span class="o">.</span><span class="n">shape</span>
@@ -1506,9 +1506,9 @@ weighted combination of context values, with weights determined by that query.</
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Test with your real dimensions</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Test with typical dimensions</span>
 <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">n_heads</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">4</span>
-<span class="n">T_q</span><span class="p">,</span> <span class="n">T_kv</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">220</span>  <span class="c1"># 3 action tokens, 220 spatial positions (11x20)</span>
+<span class="n">T_q</span><span class="p">,</span> <span class="n">T_kv</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">220</span>  <span class="c1"># e.g., 3 output tokens attending to 220 spatial features</span>
 
 <span class="n">queries_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T_q</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 <span class="n">context</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T_kv</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
@@ -1525,7 +1525,7 @@ weighted combination of context values, with weights determined by that query.</
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input shapes:  queries=</span><span class="si">{</span><span class="n">queries_input</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, context=</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output shape:  </span><span class="si">{</span><span class="n">my_out</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3 action tokens queried 220 spatial positions → 3 output tokens.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3 query tokens attended to 220 context positions → 3 output tokens.&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All assertions passed.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 <hr />

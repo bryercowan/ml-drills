@@ -728,6 +728,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#intuition" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1019,14 +1030,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/pitch/" class="md-nav__link">
+      <a href="../../interview/foundations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Your Pitch
+    Foundations
   
 
     
@@ -1054,7 +1065,7 @@
   <span class="md-ellipsis">
     
   
-    Core Concepts
+    Key Concepts
   
 
     
@@ -1075,14 +1086,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/questions/" class="md-nav__link">
+      <a href="../../interview/deep-dives/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Deep Dives
   
 
     
@@ -1131,14 +1142,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/study-plan/" class="md-nav__link">
+      <a href="../../interview/resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1159,14 +1170,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../interview/positioning/" class="md-nav__link">
+      <a href="../../interview/papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1205,11 +1216,11 @@
 
 
 <h1 id="drill-09-film-feature-wise-linear-modulation">Drill 09 — FiLM (Feature-wise Linear Modulation)<a class="headerlink" href="#drill-09-film-feature-wise-linear-modulation" title="Permanent link">&para;</a></h1>
-<p><strong>Why this matters for your architecture:</strong>
-- In your CNN policy, <strong>FiLM provides GLOBAL conditioning</strong> — it tells every feature map
-  <em>"what to do"</em> (e.g. "we're placing a road tile") by scaling and shifting activations.
-- <strong>Cross-attention provides SPATIAL conditioning</strong> — <em>"where to do it"</em>.
-- FiLM is also how diffusion models inject <strong>timestep conditioning</strong> into the denoiser.</p>
+<h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
+<p>FiLM (Feature-wise Linear Modulation) is how models inject conditioning signals into feature maps:
+- In <strong>diffusion models</strong> (Stable Diffusion, DALL-E), FiLM injects <strong>timestep conditioning</strong> into the denoiser — telling the network how noisy the current sample is.
+- In <strong>robotics policies</strong>, FiLM provides <strong>task conditioning</strong> — telling the network what action to perform.
+- It provides <strong>global conditioning</strong> ("what to do") while cross-attention handles <strong>spatial conditioning</strong> ("where to do it").</p>
 <p>It's the simplest conditioning mechanism: just a learned scale and shift.</p>
 <h2 id="intuition">Intuition<a class="headerlink" href="#intuition" title="Permanent link">&para;</a></h2>
 <p>Given features <code>x</code> of shape <code>(B, D)</code> and a conditioning vector <code>c</code> of shape <code>(B, C)</code>:</p>

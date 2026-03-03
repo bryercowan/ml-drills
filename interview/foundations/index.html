@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../concepts/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../math/">
+        <link rel="next" href="../concepts/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Questions & Answers - ML Crash Course</title>
+        <title>Foundations - ML Crash Course</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#likely-questions-your-answers" class="md-skip">
+        <a href="#foundations" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Questions & Answers
+              Foundations
             
           </span>
         </div>
@@ -892,62 +892,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../pitch/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Your Pitch
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../concepts/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Core Concepts
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -967,7 +911,7 @@
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Foundations
   
 
     
@@ -985,7 +929,7 @@
   <span class="md-ellipsis">
     
   
-    Questions & Answers
+    Foundations
   
 
     
@@ -1011,10 +955,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ml-systems-design" class="md-nav__link">
+  <a href="#what-is-a-neural-network-really" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ML Systems Design
+        What Is a Neural Network (Really)
       
     </span>
   </a>
@@ -1022,10 +966,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#paper-discussion" class="md-nav__link">
+  <a href="#what-is-training" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Paper Discussion
+        What Is Training
       
     </span>
   </a>
@@ -1033,10 +977,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#coding-questions" class="md-nav__link">
+  <a href="#what-is-a-loss-function" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coding Questions
+        What Is a Loss Function
       
     </span>
   </a>
@@ -1044,10 +988,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-would-you-do-differently" class="md-nav__link">
+  <a href="#what-is-backpropagation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "What would you do differently?"
+        What Is Backpropagation
       
     </span>
   </a>
@@ -1055,10 +999,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#whats-the-hardest-bug-you-found" class="md-nav__link">
+  <a href="#what-is-an-optimizer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "What's the hardest bug you found?"
+        What Is an Optimizer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-regularization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is Regularization
       
     </span>
   </a>
@@ -1069,6 +1024,62 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deep-dives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deep Dives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1109,14 +1120,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../study-plan/" class="md-nav__link">
+      <a href="../resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Study Plan
+    Resources
   
 
     
@@ -1137,14 +1148,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../positioning/" class="md-nav__link">
+      <a href="../papers/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Positioning
+    Key Papers
   
 
     
@@ -1182,114 +1193,56 @@
 
 
 
-<h1 id="likely-questions-your-answers">Likely Questions &amp; Your Answers<a class="headerlink" href="#likely-questions-your-answers" title="Permanent link">&para;</a></h1>
-<h3 id="ml-systems-design">ML Systems Design<a class="headerlink" href="#ml-systems-design" title="Permanent link">&para;</a></h3>
-<p>"Design a system that automates GUI interactions using vision."</p>
-<p>Walk through YOUR architecture:
-1. Frame it as a robotics problem — perception → planning → action
-2. Two-tier split: expensive cloud model for strategic reasoning
-   (runs infrequently), cheap local model for fast execution
-   (every action)
-3. Data pipeline: expert demonstrations → filtering → distillation
-4. Training: SFT first to establish baseline, then RL to improve
-5. Evaluation: real environment with DOM-based rewards
-6. Deployment: local model only, planner frequency decreases as
-   model improves</p>
-<p>They'll probe: "How do you handle failures?" → motor intent circuit
-breaker, subgoal re-planning. "How do you handle new applications?" →
-record Claude on new app, filter, retrain. Same pipeline.
-"What's the latency budget?" → 100ms CNN vs 500ms VLM vs 1s API.
-"How do you evaluate?" → DOM-based step completion on live benchmark.</p>
-<h3 id="paper-discussion">Paper Discussion<a class="headerlink" href="#paper-discussion" title="Permanent link">&para;</a></h3>
-<p>They may ask you to discuss a paper. The 5 you MUST be able to discuss:</p>
+<h1 id="foundations">Foundations<a class="headerlink" href="#foundations" title="Permanent link">&para;</a></h1>
+<p>The core mechanics of how neural networks learn. Not a textbook — the key insights only.</p>
+<hr />
+<h2 id="what-is-a-neural-network-really">What Is a Neural Network (Really)<a class="headerlink" href="#what-is-a-neural-network-really" title="Permanent link">&para;</a></h2>
+<p>A neural network is a function approximator built from layers of linear transformations followed by nonlinear activation functions. Each layer computes <code>y = activation(Wx + b)</code> where <code>W</code> (weights) and <code>b</code> (bias) are learnable parameters.</p>
+<p><strong>Key insight:</strong> Without activations, stacking layers just gives you another linear function — no more expressive than a single layer. The nonlinearity (ReLU, GELU, etc.) is what lets networks approximate <em>any</em> continuous function given enough parameters (universal approximation theorem).</p>
+<p>A neural network with one hidden layer <em>can</em> theoretically approximate anything, but in practice, deeper networks learn hierarchical features more efficiently: early layers learn edges, middle layers learn textures, later layers learn objects.</p>
+<hr />
+<h2 id="what-is-training">What Is Training<a class="headerlink" href="#what-is-training" title="Permanent link">&para;</a></h2>
+<p>Training = finding parameter values that minimize a loss function over your data.</p>
+<p><strong>Gradient descent:</strong> Compute the gradient of the loss with respect to every parameter. The gradient tells you which direction increases the loss — step in the opposite direction. Repeat.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>θ_new = θ_old - lr × ∇L(θ)
+</code></pre></div></td></tr></table></div>
+<p><strong>Stochastic gradient descent (SGD):</strong> Don't compute the gradient over the entire dataset (too expensive). Sample a <em>mini-batch</em> (32, 64, 256 examples), compute the gradient on that, and step. The noise from sampling actually helps escape local minima.</p>
+<p><strong>Key insight:</strong> Training is optimization over a loss landscape. The loss function defines <em>what</em> to learn. The optimizer defines <em>how</em> to navigate. The data defines <em>from what</em>.</p>
+<hr />
+<h2 id="what-is-a-loss-function">What Is a Loss Function<a class="headerlink" href="#what-is-a-loss-function" title="Permanent link">&para;</a></h2>
+<p>The loss function measures how wrong your model's predictions are. Training minimizes this number.</p>
+<p><strong>Mean Squared Error (MSE):</strong> <code>L = (1/n) Σ(y_pred - y_true)²</code>. Used for regression. Penalizes large errors quadratically — big mistakes matter more.</p>
+<p><strong>Cross-Entropy Loss:</strong> <code>L = -Σ y_true × log(y_pred)</code>. Used for classification. Measures how far the predicted probability distribution is from the true distribution.</p>
+<p><strong>Connection to information theory:</strong> Cross-entropy = entropy + KL divergence. Minimizing cross-entropy is the same as minimizing KL divergence between predicted and true distributions, which is the same as maximum likelihood estimation (MLE). These are all the same thing viewed from different angles.</p>
+<p><strong>Key insight:</strong> Your loss function encodes your entire learning objective. A bad loss function means optimal training gives you the wrong model. Choosing the right loss is often more important than choosing the right architecture.</p>
+<hr />
+<h2 id="what-is-backpropagation">What Is Backpropagation<a class="headerlink" href="#what-is-backpropagation" title="Permanent link">&para;</a></h2>
+<p>Backprop is just the chain rule applied systematically through a computation graph.</p>
+<p><strong>The chain rule:</strong> If <code>L = f(g(h(x)))</code>, then <code>dL/dx = dL/df × df/dg × dg/dh × dh/dx</code>. Each layer computes its local gradient and passes it backward.</p>
+<p><strong>Computation graph:</strong> Every operation your model performs (matmul, add, ReLU, softmax) is a node in a directed acyclic graph. The forward pass computes the output. The backward pass walks the graph in reverse, multiplying local gradients.</p>
+<p><strong>In practice:</strong></p>
 <ol>
-<li>
-<p>ATTENTION IS ALL YOU NEED (Vaswani et al. 2017)
-   Key ideas: self-attention replaces recurrence, multi-head attention,
-   positional encoding, encoder-decoder structure.
-   Your angle: "My VLM backbone is a decoder-only transformer. The
-   attention mechanism is what I LoRA-tune. Multi-head attention is
-   why different heads can attend to different image regions."</p>
-</li>
-<li>
-<p>LORA (Hu et al. 2021)
-   Key ideas: low-rank decomposition of weight updates, no inference
-   latency (merge at deployment), comparable performance to full
-   fine-tuning at 0.1-1% of parameters.
-   Your angle: "I ran extensive experiments with different LoRA configs.
-   The key finding was target module selection matters more than rank —
-   attention-only vs attention+MLP was the difference between 2 steps
-   and 0 steps."</p>
-</li>
-<li>
-<p>DIFFUSION POLICY (Chi et al. 2023)
-   Key ideas: diffusion models for action prediction, action chunking,
-   handles multi-modal action distributions, CNN backbone with spatial
-   features.
-   Your angle: "My CNN policy is directly inspired by this. Same
-   architecture — ConvNeXt encoder, DDPM denoiser, cross-attention
-   conditioning. I adapted it from robotics manipulation to GUI
-   automation."</p>
-</li>
-<li>
-<p>DEEPSEEK-R1 / GRPO (DeepSeek 2024)
-   Key ideas: Group Relative Policy Optimization, no critic needed,
-   relative advantage within groups, applied to reasoning tasks.
-   Your angle: "I attempted 7 GRPO configurations. The failure mode
-   taught me that GRPO needs a base policy competent enough to generate
-   within-group variance. DeepSeek started from ~30% solve rate; my
-   base was at ~20% for step 1 alone."</p>
-</li>
-<li>
-<p>DPO (Rafailov et al. 2023)
-   Key ideas: direct optimization of preferences without reward model,
-   Bradley-Terry preference model, implicit reward, beta controls
-   conservatism.
-   Your angle: "I attempted 6 DPO configurations. The failure taught
-   me that DPO is extremely sensitive to label noise — our SSIM-based
-   labels had maybe 15-20% noise rate which corrupted the implicit
-   reward model."</p>
-</li>
+<li>Forward pass: compute output and loss</li>
+<li>Backward pass: compute gradient of loss w.r.t. every parameter</li>
+<li>Update: optimizer steps each parameter using its gradient</li>
 </ol>
-<h3 id="coding-questions">Coding Questions<a class="headerlink" href="#coding-questions" title="Permanent link">&para;</a></h3>
-<p>If they ask you to implement something ML-related:
-- Self-attention from scratch (matrix multiply Q, K^T, scale, softmax,
-  multiply by V) — practice this in PyTorch, it's 5 lines
-- Simple training loop (forward, loss, backward, optimizer step)
-- LoRA layer (linear layer that adds BA to the output)
-- Softmax from scratch (exp(x - max(x)) / sum, with numerical stability)
-- Cross-entropy loss from scratch</p>
-<h3 id="what-would-you-do-differently">"What would you do differently?"<a class="headerlink" href="#what-would-you-do-differently" title="Permanent link">&para;</a></h3>
-<p>This is a research taste question. Good answers:</p>
-<p>"I'd invest more in data quality upfront. Our first 857 hand-curated
-examples outperformed 3,912 auto-filtered ones because the LoRA target
-was wrong — but the lesson is that data curation is worth 10x the
-engineering effort of training tweaks."</p>
-<p>"I'd try rejection sampling fine-tuning (RFT) before GRPO. RFT generates
-many rollouts, keeps only the successful ones, and does more SFT. It's
-less elegant but more robust when the base policy is weak. You build up
-the success rate gradually until GRPO becomes viable."</p>
-<p>"For the CNN policy, I'd explore replacing the diffusion head with direct
-regression + mixture density network. Diffusion gives multi-modal
-predictions but at the cost of 10 denoising steps. An MDN could handle
-multi-modality in a single forward pass."</p>
-<h3 id="whats-the-hardest-bug-you-found">"What's the hardest bug you found?"<a class="headerlink" href="#whats-the-hardest-bug-you-found" title="Permanent link">&para;</a></h3>
-<p>"The LoRA target module discovery. SFT v7 and v8 both scored 0 steps
-despite low training loss and 4.6x more data than v5 which scored 2 steps.
-After eliminating data quality, learning rate, and training duration, I
-compared the adapter configs and found v5 used attention-only LoRA while
-v7/v8 included MLP layers. The MLP layers in EvoCUA store spatial grounding
-from Meituan's 82K-trajectory pretraining. By including them in LoRA, we
-overwrote that knowledge with our 3,912 examples — not enough data to
-relearn grounding from scratch. The fix was trivial (remove 3 strings from
-a config), but finding it required understanding the architectural role of
-attention vs MLP in vision-language models."</p>
-<p>Also strong: "Radix UI radio buttons. The benchmark used React's Radix UI
-library which renders radio buttons as <button role='radio'> with
-data-state='checked' instead of standard HTML <input type='radio'>. Our
-DOM reward queries for input[type=radio] returned nothing — weeks of
-broken modal detection in GRPO training traced back to this. The fix
-was querying [role=radio][data-state=checked]."</p>
+<p><strong>Key insight:</strong> Backprop is efficient because it reuses intermediate computations. Computing all gradients costs roughly 2-3× the forward pass — not one pass per parameter. This is what makes training neural networks feasible.</p>
+<hr />
+<h2 id="what-is-an-optimizer">What Is an Optimizer<a class="headerlink" href="#what-is-an-optimizer" title="Permanent link">&para;</a></h2>
+<p>The optimizer decides <em>how</em> to update parameters given gradients. Vanilla SGD just steps proportionally to the gradient. Modern optimizers are smarter.</p>
+<p><strong>SGD with momentum:</strong> Keep a running average of past gradients. This smooths out noise and accelerates through narrow valleys in the loss landscape.</p>
+<p><strong>Adam (Adaptive Moment Estimation):</strong> Maintains per-parameter learning rates using first moment (mean) and second moment (variance) of gradients. Parameters with consistently large gradients get smaller updates; parameters with small, noisy gradients get larger updates.</p>
+<p><strong>AdamW:</strong> Adam with <em>decoupled</em> weight decay. Standard Adam applies weight decay through the gradient, which interacts badly with the adaptive learning rate. AdamW applies it directly to the weights, giving proper L2 regularization. This is what you should use by default.</p>
+<p><strong>Key insight:</strong> Adaptive learning rates (Adam, AdamW) work well because different parameters need different step sizes. A parameter in an early layer and a parameter in the final layer face very different gradient landscapes.</p>
+<p><strong>Typical defaults:</strong> AdamW with <code>lr=1e-4</code> to <code>3e-4</code>, <code>betas=(0.9, 0.999)</code>, <code>weight_decay=0.01</code>. Use a warmup schedule (linear warmup for ~5-10% of training, then cosine decay).</p>
+<hr />
+<h2 id="what-is-regularization">What Is Regularization<a class="headerlink" href="#what-is-regularization" title="Permanent link">&para;</a></h2>
+<p>Regularization prevents overfitting — when your model memorizes training data instead of learning generalizable patterns.</p>
+<p><strong>Dropout:</strong> During training, randomly zero out neurons with probability <code>p</code> (typically 0.1-0.3). This forces the network to not rely on any single neuron and builds redundancy. At inference, use all neurons but scale by <code>(1-p)</code>.</p>
+<p><strong>Weight decay (L2 regularization):</strong> Add <code>λ × ||W||²</code> to the loss, penalizing large weights. Keeps parameters small, which acts as a soft constraint on model complexity. In AdamW, this is applied directly to weights rather than through the gradient.</p>
+<p><strong>Early stopping:</strong> Monitor validation loss during training. When it stops improving (or starts increasing while training loss keeps decreasing), stop. The gap between training and validation loss is your overfitting signal.</p>
+<p><strong>Data augmentation:</strong> Transform training data (crop, flip, rotate, add noise) to artificially increase diversity. The model must learn features robust to these transformations.</p>
+<p><strong>Key insight:</strong> Regularization is about the bias-variance tradeoff. Too little capacity or too much regularization → underfitting (can't learn the pattern). Too much capacity or too little regularization → overfitting (memorizes noise). The sweet spot is where your model generalizes.</p>
 
 
 
